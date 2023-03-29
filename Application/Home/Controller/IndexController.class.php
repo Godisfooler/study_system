@@ -1,33 +1,24 @@
 <?php
-/**
- * API接口中心【用户  接口中心】
- * @author  onep2p<onep2p@163.com>
- *
- */
 namespace Home\Controller;
-
 use Think\Controller;
 
-class IndexController extends MemberAccreditController
+class IndexController extends Controller
 {
-    public $common;
     public $uid;
     
+    protected function _initialize()
+    {
+        if(is_login()){
+	        $this->uid = is_login();
+        }else{
+            $this->redirect('Home/Member/login');
+        }
+	}
     /**
      * 首页
      */
     public function index($accredit='',$uid = ''){
         $this->Display();//显示对应html文件
-    }
-
-    //登录页面显示
-    public function login(){
-        $this->Display();
-    }
-
-    //注册页面显示
-    public function regist(){
-        $this->Display();
     }
 
     //个人信息页面
