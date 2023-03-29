@@ -18,10 +18,7 @@ class MemberController extends Controller
     public $common;
     
     /**
-     * 会员登录
-     * @param string username 会员名称
-     * @return \think\response\Json
-     * @author xj
+     * 登录账号
      */
     public function login($username = '',$password = ''){
         $this->username = $username;
@@ -120,6 +117,45 @@ class MemberController extends Controller
         }
     }
     
+    //注册账号
+    public function regist(){
+        //接受post参数
+        $post = I('');
+
+        $username = $post['username'];//用户名
+        $password = $post['password'];//密码
+        $iIsHeadman = empty($post['iIsHeadman'])?0:$post['iIsHeadman'];//是否为组长
+        $iGroupId = empty($post['iGroupId'])?0:$post['iGroupId'];//小组id
+
+        $sLike = empty($post['like'])?"":$post['like'];//兴趣爱好
+        $sSkill = empty($post['sSkill'])?"":$post['sSkill'];//特长
+        //判断用户名或密码是否为空
+        if(empty($username) || empty($password)){
+            $this->ajaxReturn(['status'=>0,'message'=>'请输入用户名或密码！']);
+        }
+        //sha1加密拼接配置加密参数，再取md5值
+        $password = md5(sha1($password).C('DATA_AUTH_KEY'));
+
+        //判断数据库是否存在同名账号
+        if(M('ucenter_member')->where(['username'=>$username])->find()){
+            $this->ajaxReturn(['status'=>0,'message'=>'用户名已存在！']);
+        }else{
+            //账号信息添加到数据库
+            $saveData = [];
+            $saveData['username'] = $username;
+            $saveData['password'] = $password;
+            $saveData['sLike'] = $sLike;
+            $saveData['sSkill'] = $sSkill;
+            $saveData['iIsHeadman'] = $iIsHeadman;
+            $saveData['iGroupId'] = $iGroupId;
+            $res = M('ucenter_member')->add($saveData);
+            if($res){
+                $this->ajaxReturn(['status'=>1,'message'=>'注册成功！']);
+            }else{
+                $this->ajaxReturn(['status'=>0,'message'=>'注册失败！']);
+            }
+        }
+    }
     
     /**
      * 验证账户是否过期
