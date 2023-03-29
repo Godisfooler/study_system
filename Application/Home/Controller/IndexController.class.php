@@ -38,4 +38,21 @@ class IndexController extends MemberAccreditController
         $this->Display();
     }
     
+    //问题列表
+    public function questionList(){
+        //数据库查询问题列表
+        $list = M('question_list')->select();
+
+        $this->assign('question_list',$list);//渲染到前端页面
+        $this->Display();
+    }
+
+    //回复列表
+    public function answerList(){
+        //数据库查询用户回答列表
+        $list = M('answer_list')->select();
+
+        $this->assign('answer_list',$list);//渲染到前端页面
+        $this->Display();
+    }
 }
