@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>新闻管理</title>
+	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" charset="utf-8" src="<?php echo $webconf['__JS__']?>/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="<?php echo $webconf['__JS__']?>/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="<?php echo $webconf['__JS__']?>/zh-cn.js"></script>
+</head>
+<body class="col-md-6 col-md-offset-2 left">
+<form action="" method="post" enctype="multipart/form-data">
+  <div class="form-group text-left">
+    <label for="exampleInputEmail1"><h2>新闻管理</h2></label></p>
+  </div>
+  <div class="form-group" >
+    新闻类型：<select class="form-control lx">
+    <option value="0">请选择</option>
+    <option value="news">新闻资讯</option>
+    <option value="news2">新闻资讯</option>
+   </select>
+    新闻标题：<select class="form-control bt" value="">
+    </select>
+  </div>
+  <script id="editor" class="ed" type="text/plain"  style="width:700px;height:400px;"></script>
+  <button type=submit" style="width: 49%" class="btn btn-success" onclick="update()">确认提交</button>
+  <button type="sumbit" style="width: 49%" class="btn btn-danger" onclick="del()">确认删除</button>
+</form>
+<script type="text/javascript" src="<?php echo $webconf['__JS__']?>/jquery-1.9.1.min.js"></script>
+<script>
+	var ue = UE.getEditor('editor');
+	$(".lx").change(function(){
+		ajax();
+	})
+	function ajax(){
+		var name=$(".lx").val();
+	$.ajax({
+			url:"?c=index&a=newsbt",
+			type:"post",
+			data:{name:name},
+			dataType:"json",
+			success:function(data){
+				$(".bt").html("");
+				$.each(data,function(key,value){
+					$(".bt").append('<option value="'+value.id+'">'+value.title+'</option>');
+				})
+					
+			}
+		})
+		}
+	$(".bt").change(function(){
+		var id=$(".bt").val();
+		$.ajax({
+			url:"?c=index&a=newsct",
+			type:"post",
+			data:{id:id},
+			dataType:"json",
+			success:function(data){
+				$.each(data,function(key,value){
+				ue.setContent(value.content);
+				})
+			}
+		})
+	})
+	 function update(){
+    	$.ajax({
+    		url:"?c=index&a=update",
+    		type:"post",
+    		dataType:"text",
+    		data:{title:$(".bt option:selected").text(),content:ue.getContent(),id:$(".bt").val()},
+    		success:function(data){
+    			alert(data);
+    		}	
+    	})
+    }
+	function del(){
+		$.ajax({
+    		url:"?c=index&a=del",
+    		type:"post",
+    		dataType:"text",
+    		data:{id:$(".bt").val()},
+    		success:function(data){
+    			alert(data);
+    		}	
+    	})
+	}
+</script>
+</body>
+</html>

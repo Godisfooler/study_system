@@ -1,0 +1,152 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style type="text/css">
+.li li{
+	float:left;
+	margin-left:10px;
+}
+</style>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>服务咨询公司</title>
+<link rel="stylesheet" type="text/css" href="<?php echo $webconf['__CSS__']?>/reset.css"/>
+<script type="text/javascript" src="<?php echo $webconf['__JS__']?>/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="<?php echo $webconf['__REL__']?>/FlexSlider/jquery.flexslider.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $webconf['__REL__']?>/FlexSlider/flexslider.css">
+<script type="text/javascript" src="<?php echo $webconf['__JS__']?>/js_z.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $webconf['__CSS__']?>/thems.css">
+<script language="javascript">
+$(function() {
+  $('.flexslider').flexslider({
+	animation: "slide"
+  });
+});
+
+</script>
+</head>
+
+<body>
+<?php
+	head();
+?>
+<script>
+$("li:first").addClass("now");
+</script>
+<div class="banner" >
+	<div class="slider">
+        <div class="flexslider">
+          <ul class="slides">
+            <?php
+            	img();
+            ?>
+          </ul>
+        </div>
+    </div>
+</div>
+<div class="m_bg">
+	<div class="i_ma clearfix">
+    	<div class="i_mam i_ma1">
+        	<div class="box_h">
+            	<span>专注领域</span>
+                <a href="?c=index&a=focus" class="h_more">&nbsp;</a>
+            </div>
+            <ul class="clearfix">
+            	<li class="a">
+                	<a href="?c=index&a=focus">
+                    	<img src="<?php echo $webconf['__IMAGES__']?>/p1.png" alt=""/>
+                        <p>地产类</p>
+                    </a>
+                </li>
+                <li class="b">
+                	<a href="?c=index&a=focus">
+                    	<img src="<?php echo $webconf['__IMAGES__']?>/p2.png" alt=""/>
+                        <p>金融类</p>
+                    </a>
+                </li>
+                <li class="c">
+                	<a href="?c=index&a=focus">
+                    	<img src="<?php echo $webconf['__IMAGES__']?>/p3.png" alt=""/>
+                        <p>互联网类</p>
+                    </a>
+                </li>
+                <li class="d">
+                	<a href="?c=index&a=focus">
+                    	<img src="<?php echo $webconf['__IMAGES__']?>/p4.png" alt=""/>
+                        <p>APP类</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="i_mam i_ma2">
+        	<div class="box_h">
+            	<span>企业简介</span>
+                <a href="?c=index&a=about" class="h_more">&nbsp;</a>
+            </div>
+            <div class="i_about">
+            	<img src="<?php echo $webconf['__UP__']?>/pic1.jpg" alt=""/>
+                服务咨询公司（China  Sincerity  Broad   Chait）,简称“XXXX”设立于特区深圳，立足华南，拓展全国，是全国性的专业猎头服务咨询公司，立足为全国各大地产，互联网，金融企业，大型企事业机构等提供中高级人才寻聘服务。远图咨询拥有资深的行业专业性猎头人才 ...
+            </div>
+        </div>
+        <div class="i_mam i_ma3">
+        	<div class="box_h">
+            	<span>新闻资讯</span>
+                <a href="" class="h_more">&nbsp;</a>
+            </div>
+  			<?php
+  			news();
+  			?>
+  		</div>
+    </div>
+    <div class="space_hx">&nbsp;</div>
+    <div class="i_mb clearfix">
+    	<div class="i_mbl">
+        	<div class="box_h">
+            	<span>合作企业</span>
+                <a href="?c=index&a=cooperation" class="h_more">&nbsp;</a>
+            </div>
+            <ul>
+                <?php 
+          		partner();
+                ?>
+            </ul>
+        </div>
+        <div class="i_mbr">
+        	<div class="box_h">
+            	<span>猎头职位</span>
+                <a href="?c=index&a=person" class="h_more">&nbsp;</a>
+            </div>
+            <div class="i_mbm">
+            	<table cellpadding="0" cellspacing="0">
+                  <tr>
+                    <th scope="col" class="l_left">公司</th>
+                    <th scope="col">职位</th>
+                    <th scope="col">年薪</th>
+                    <th scope="col">地点</th>
+                    <th scope="col">时间</th>
+                  </tr>
+                <?php 
+					job();
+                ?>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="space_hx">&nbsp;</div>
+    <div class="partner">
+    	<div class="b_h">
+        	<span>合作伙伴</span>
+            <div class="line">&nbsp;</div>
+            <a href="?c=index&a=cooperation" class="h_more">&nbsp;</a>
+        </div>
+        <ul class="clearfix">
+         	<?php 
+         	partner2();
+         	?>
+        </ul>
+    </div>
+</div>
+	<?php 
+	footer();
+	?>
+</body>
+</html>

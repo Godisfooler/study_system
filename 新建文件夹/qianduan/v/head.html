@@ -1,0 +1,29 @@
+<div class="h_bg">
+	<div class="bg_img"><img src="<?php echo $webconf['__IMAGES__']?>/h_bg.jpg" alt=""/></div>
+    <div class="head clearfix">
+    	<div class="logo"><a href="?c=index&a=index"><img src="<?php echo $webconf['__IMAGES__']?>/logo.png" alt=""/></a></div>
+        <ul class="nav clearfix">
+        <?php 
+			foreach($data['li'] as $li){
+			echo '<li><a class="yi" href="'.$li['url'].'">'.$li['name'].'</a></li>';
+}
+?>
+        </ul>
+    </div>
+    <div style="width:150px;height:300px;position:fixed;z-index:9;right:0;top:200px;padding-top:20px">
+   <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=1257761912&site=qq&menu=yes"><img border="0" src="http://wpa.qq.com/pa?p=2:1007005246:53" alt="点击这里给我发消息" title="点击这里给我发消息"/></a>
+ 	<p style="color:blue;margin-left:25px;"> 业务办理：<br><?php 
+		foreach($data['lianxi'] as $d){
+		echo $d['tel'] ;}?></p>
+	<p style="color:blue;margin-left:25px;"> 售后热线：<br><?php 
+		foreach($data['lianxi'] as $d)
+		echo $d['tel2'] ?></p>
+	<p style="color:blue;text-align:center">官方微信</p>
+	<img src="<?php foreach($data['lianxi'] as $d){
+		echo $d['wx'];} ?>" alt=""/>
+	<p style="color:blue;text-align:center">微信公众号</p>
+	<img src="<?php foreach($data['lianxi'] as $d){
+		echo $d['wx2'];} ?>" alt=""/>
+                    
+    </div>
+</div>

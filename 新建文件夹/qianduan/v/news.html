@@ -1,0 +1,61 @@
+<script>
+var nowpage=1;
+function tops(){
+	nowpage=nowpage-1;
+	if(nowpage<1){
+		nowpage=1;
+	}
+	ajax();
+}
+function next(){
+	nowpage=nowpage+1;
+	if(nowpage><?php echo $data['maxpage']?>){
+		nowpage=<?php echo $data['maxpage']?>;
+	}
+	ajax();
+}
+
+function ajax(){
+	$.ajax({
+		url:'?c=index&a=fy',
+		type:'post',
+		dataType:'json',
+		data:{nowpage:nowpage},
+		success:function(data){
+		$(".i_news").html("");
+		$.each(data,function(key,value){
+			$(".i_news").append('<li>'+'<a href="?c=index&a=news_c&id='+value.id+'"">'+value.title+'</a></li>')
+		})
+		}
+	})
+}
+</script>	
+	<ul class="i_news" style="float:left">
+	<?php 
+      	foreach($data['news'] as $d){
+		echo '<li><a href="?c=index&a=news_c&id='.$d['id'].'">'.$d['title'].'</a></li>';
+	}
+ 	?>
+	</ul>
+	<div style="margin-left:100px;">
+	<a onclick="tops()" style="float:left">上一页</a>
+	 		
+	<ul class="li"></ul> 
+  	<a  onclick="next()" style="float:left">下一页</a>
+  	</div>
+<script>
+	var li="";
+	for(var i=nowpage;i<=<?php echo $data['maxpage'] ?>;i++){
+		li=li+"<li>"+i+"</li>";
+	}
+	$(".li").html(li);
+	$("li").click(function(){
+		nowpage=$(this).text();
+		ajax();
+	})
+</script>
+  		
+	
+	
+	
+	

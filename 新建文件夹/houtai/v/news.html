@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>新闻管理</title>
+<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" charset="utf-8" src="<?php echo $webconf['__JS__']?>/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="<?php echo $webconf['__JS__']?>/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="<?php echo $webconf['__JS__']?>/zh-cn.js"></script>
+
+</head>
+<body>
+<form action="" method="post" enctype="multipart/form-data" class="form-horizontal" style="margin-top:40px;">
+  <div class="form-group">
+    <label for="inputPassword" class=" col-sm-2 control-label">新闻标题：</label>
+    <div class="col-sm-10">
+      <input type="text" name="title" class=" title form-control" placeholder="请输入新闻标题" style="width:50%">
+    </div>
+  </div>
+   <div class="form-group">
+    <label for="inputPassword" class="col-sm-2 control-label">新闻内容：</label>
+    <div class="col-sm-10">
+    <script id="editor" type="text/plain" style="width:800px;height:300px;"></script>
+
+    </div>
+  </div>
+ <button  type="submit" onclick="tijiao2()" style="width: 100px;margin-left:245px;" class="btn btn-success">确认提交</button>
+</form>
+<script type="text/javascript">
+    var ue = UE.getEditor('editor');
+    function tijiao2(){
+    	$.ajax({
+    		url:"?c=index&a=tijiao2",
+    		type:"post",
+    		dataType:"text",
+    		data:{title:$(".title").val(),content:ue.getContent()},
+    		success:function(data){
+    			alert(data);
+    		}	
+    	})
+    }
+</script>
+<script type="text/javascript" src="<?php echo $webconf['__JS__'] ?>/jquery-1.9.0.min.js"></script>
+</body>
+</html>

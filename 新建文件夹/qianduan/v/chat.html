@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>聊天室</title>
+<style>
+	img{
+	width:50px;
+	height:50px;
+	border-radius:50%;
+	margin-top:3px;
+	}
+	.chat{
+	width:80%;
+	height:35px;
+	background:#fff;
+	float:left;
+	margin:10px;
+	line-height:35px;
+	}
+	input{
+	position:absolute;
+	bottom:100px;
+	width:340px;
+	height:40px;
+	}
+	.send{
+	position:absolute;
+	height:40px;
+	width:60px;
+	bottom:100px;
+	right:520px;
+	}
+	.recive{
+	position:absolute;
+	height:40px;
+	width:60px;
+	bottom:60px;
+	right:520px;
+	}
+</style>
+</head>
+<body style="background:#7EC0EE;">
+	<div style="width:400px;height:600px;border:1px solid lightblue;margin:auto;"class="lt">
+		<div style="background:#636363;height:30px;line-height:30px;text-align:center;color:#fff;font-size:20px;">与xx正在聊天中</div>
+		<div>
+			<img src="v/wximg/启明星.jpg" style="float:left">
+			<div class="chat">许愿启明星</div>
+		</div>
+		<div>
+			<img src="v/wximg/mozhanjian.jpg" style="float:right">
+			<div class="chat">许愿魔战肩</div>
+		</div>
+		<p style="clear:both"></p>
+		<p><input type="text" value="" class="msg">
+		<button class="send">发送</button>
+		<button class="recive">接收</button>
+		</p>
+	</div>
+	<script type="text/javascript" src="<?php echo $webconf['__JS__']?>/jquery-1.9.1.min.js"></script>
+	<script>
+		$(".send").click(function(){
+			$.ajax({
+				url:"?c=index&a=send",
+				type:"post",
+				data:{msg:$(".msg").val()},
+				dataType:"text",
+				success:function(data){
+					console.log(data);
+					$(".lt").append(
+							'<img src="v/wximg/mozhanjian.jpg" style="float:right">'+
+							'<div class="chat">'+$(".msg").val()+'</div>');
+				}
+			})
+		})
+		
+	function recive(){
+			$.ajax({
+				url:"?c=index&a=recive",
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					console.log(data);
+					$(".lt").append(
+							'<img src="v/wximg/启明星.jpg" style="float:left">'+
+							'<div class="chat">'+data[0].text+'</div>');
+				}
+			})
+		}
+	setInterval("recive()",1000);
+	</script>
+</body>
+</html>
