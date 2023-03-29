@@ -61,9 +61,9 @@ class MemberController extends Controller
 
         $username = $post['username'];//用户名
         $password = $post['password'];//密码
+        $iType = empty($post['iType'])?0:$post['iType'];//用户类型
         $iIsHeadman = empty($post['iIsHeadman'])?0:$post['iIsHeadman'];//是否为组长
         $iGroupId = empty($post['iGroupId'])?0:$post['iGroupId'];//小组id
-
         $sLike = empty($post['like'])?"":$post['like'];//兴趣爱好
         $sSkill = empty($post['sSkill'])?"":$post['sSkill'];//特长
         //判断用户名或密码是否为空
