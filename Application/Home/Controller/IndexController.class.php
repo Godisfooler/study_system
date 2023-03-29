@@ -5,7 +5,6 @@ use Think\Controller;
 class IndexController extends Controller
 {
     public $uid;
-    
     protected function _initialize()
     {
         if(is_login()){

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>注册成功</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f8f8f8;
+		}
+		
+		h1 {
+			color: #4CAF50;
+			font-size: 2em;
+			margin-top: 50px;
+			text-align: center;
+		}
+		
+		p {
+			color: #333;
+			font-size: 1.2em;
+			line-height: 1.5;
+			margin: 20px 0;
+			text-align: center;
+		}
+		
+		ul {
+			list-style: none;
+			padding: 0;
+			margin: 20px auto;
+			max-width: 400px;
+			text-align: center;
+		}
+		
+		li {
+			color: #555;
+			font-size: 1.1em;
+			line-height: 1.5;
+			margin: 10px 0;
+		}
+		
+		a {
+			color: #fff;
+			background-color: #4CAF50;
+			padding: 10px 20px;
+			border-radius: 5px;
+			display: block;
+			margin: 30px auto 0;
+			max-width: 200px;
+			text-align: center;
+			text-decoration: none;
+			font-size: 1.1em;
+			font-weight: bold;
+			transition: all 0.3s ease;
+		}
+		
+		a:hover {
+			background-color: #333;
+		}
+	</style>
+</head>
+<body>
+	<h1>恭喜您，注册成功！</h1>
+	<p>即将跳转到登录页面...</p>
+	<a href="{:U('Home/Member/login')}">立即登录</a>
+</body>
+<script>
+    // 延迟 3 秒后自动跳转到登录页
+    setTimeout(function() {
+        window.location.href = "{:U('Home/Member/login')}";
+    }, 3000);
+</script>
+</html>

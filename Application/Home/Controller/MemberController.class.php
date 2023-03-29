@@ -21,6 +21,11 @@ class MemberController extends Controller
         $this->Display();
     }
 
+    //注册成功提示页面
+    public function loginSuccess(){
+        $this->Display();
+    }
+
     /**
      * 登录账号
      */
@@ -58,14 +63,13 @@ class MemberController extends Controller
     public function registAction(){
         //接受post参数
         $post = I('');
-
         $username = $post['username'];//用户名
         $password = $post['password'];//密码
-        $iType = empty($post['iType'])?0:$post['iType'];//用户类型
-        $iIsHeadman = empty($post['iIsHeadman'])?0:$post['iIsHeadman'];//是否为组长
-        $iGroupId = empty($post['iGroupId'])?0:$post['iGroupId'];//小组id
-        $sLike = empty($post['like'])?"":$post['like'];//兴趣爱好
-        $sSkill = empty($post['sSkill'])?"":$post['sSkill'];//特长
+        $iType = empty($post['user_type'])?0:$post['user_type'];//用户类型
+        $iIsHeadman = empty($post['position_select'])?0:$post['position_select'];//是否为组长
+        $iGroupId = empty($post['group_select'])?0:$post['group_select'];//小组id
+        $sLike = empty($post['likes'])?"":$post['likes'];//兴趣爱好
+        $sSkill = empty($post['skills'])?"":$post['skills'];//特长
         //判断用户名或密码是否为空
         if(empty($username) || empty($password)){
             $this->ajaxReturn(['status'=>0,'message'=>'请输入用户名或密码！']);
@@ -81,13 +85,14 @@ class MemberController extends Controller
             $saveData = [];
             $saveData['username'] = $username;
             $saveData['password'] = $password;
+            $saveData['iType'] = $iType;
             $saveData['sLike'] = $sLike;
             $saveData['sSkill'] = $sSkill;
             $saveData['iIsHeadman'] = $iIsHeadman;
             $saveData['iGroupId'] = $iGroupId;
             $res = M('ucenter_member')->add($saveData);
             if($res){
-                $this->ajaxReturn(['status'=>1,'message'=>'注册成功！']);
+                redirect(U('Home/Member/loginSuccess'));
             }else{
                 $this->ajaxReturn(['status'=>0,'message'=>'注册失败！']);
             }

@@ -1,22 +1,131 @@
-
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
 <head>
-	<meta charset="UTF-8" />
-	<title>登录</title>
-	<link href="__CSS__/boot.css" rel="stylesheet">
+    <title>首页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <!-- <link href="__CSS__/font.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="__CSS__/style.css" type="text/css" media="all" />
+    <!-- <link rel="stylesheet" href="__CSS__/font-awesome.min.css" type="text/css" media="all"> -->
 </head>
-<body class="col-md-4 col-md-offset-4 center">
-<form action="?c=index&a=ck_login" method="post" enctype="multipart/form-data">
-  <div class="form-group text-center">
-    <label for="exampleInputEmail1"><h2>登录</h2></label>
-    <input type="username" name="username" class="form-control username"  placeholder="请输入账号">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1"></label>
-    <input type="password" name="pwd" class="form-control" placeholder="请输入密码">
-  </div>
-  <button type="submit" onclick="dianji()" style="width: 100%" class="btn btn-success">立即登录</button>
-</form>
+<style>
+  .selection-box {
+    position: relative;
+    margin: 0px 0px 15px 0px;
+    width: 100%;
+    height: 50px;
+    border-radius: 36px;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    background-color: #fff;
+  }
+  .selection-box select {
+    appearance: none;
+    -webkit-appearance: none;
+    font-size: 16px;
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: 10px;
+    padding-left: 20px;
+    color:#333
+    
+  }
+  .selection-box .arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 5px 0 5px;
+    border-color: #333 transparent transparent transparent;
+    z-index: 1;
+  }
+  #login_form label {
+    font-size: 18px;
+    color:#333;
+    margin-left: 10px;
+  }
+</style>  
+<body>
+    <section class="w3l-hotair-form">
+        <h1>学习系统</h1>
+        <div class="container">
+            <!-- /form -->
+            <div class="workinghny-form-grid">
+                <div class="main-hotair">
+                    <div class="content-wthree">
+                        <h2>注册</h2>
+                        <p>你的账户</p>
+                        <form id="login_form" action="{:U("Home/Member/registAction")}" method="post">
+                          <label for="username">用户名：</label>
+                          <input type="text" id="username" name="username" placeholder="请输入" required>
+                          <label for="username">密码：</label>
+                          <input type="password" class="password" name="password" placeholder="请输入" required>
+                            <label for="username">账户类型：</label>
+                            <div class="selection-box">
+                              <select id="user_type" name="user_type">
+                                <option value="0" selected>学生</option>
+                                <option value="1">老师</option>
+                              </select>
+                              <span class="arrow"></span>
+                            </div>
+                            <div class="group">
+                              <label for="username">分组：</label>
+                              <div class="selection-box">
+                                <select id="group_select" name="group_select">
+                                  <option value="1">1组</option>
+                                  <option value="2">2组</option>
+                                </select>
+                                <span class="arrow"></span>
+                              </div>
+                            </div>
+                            <div class="position">
+                              <label for="username">职位：</label>
+                              <div class="selection-box">
+                                <select id="position_select" name="position_select">
+                                  <option value="0" selected>组员</option>
+                                  <option value="1">组长</option>
+                                </select>
+                                <span class="arrow"></span>
+                              </div>
+                            </div>
+                            <label for="username">兴趣爱好：</label>
+                            <input type="text" class="text" name="likes" placeholder="请输入" required="">
+                            <label for="username">特长：</label>
+                            <input type="text" class="text" name="skills" placeholder="请输入" required="">
+                            <button class="btn" type="submit">注册</button>
+                        </form>
+                        <p class="account">已有账户？ <a href="{:U('Home/Member/login')}">登录</a></p>
+                    </div>
+                    <div class="w3l_form align-self">
+                        <div class="left_grid_info">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="__JS__/jquery.min.js"></script>
+    <script>
+        const typeSelect = document.getElementById("user_type")
+        typeSelect.addEventListener("change", event => {
+            const selectedType = event.target.value
+            if(selectedType > 0){
+              $(".group").hide();
+              $(".position").hide();
+            }else{
+              $(".group").show();
+              $(".position").show();
+            }
+        })
+    </script>
+
 </body>
+
 </html>
