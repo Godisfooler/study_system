@@ -1,17 +1,49 @@
-
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-	<meta charset="UTF-8" />
-	<title>个人信息</title>
-	<link href="__CSS__/boot.css" rel="stylesheet">
+    <include file="./Application/Home/View/default/Public/nav.html" />
+    <include file="./Application/Home/View/default/Public/footer.html" />
+	<title>个人中心</title>
+    <!-- all meta -->
+    <meta charset="UTF-8">
+    <style>
+      .section_padding{
+        padding:30px;
+      }
+    </style>
 </head>
-<body class="left">
-  <div class="info_list">
-    <p><span class="" data-rid="">组号：{$userInfo.iGroupId}</span></p>
-    <p><span class="" data-rid="">是否为组长：{$userInfo.iIsHeadman}</span></p>
-    <p><span class="" data-rid="">兴趣爱好：{$userInfo.sLike}</span></p>
-    <p><span class="" data-rid="">特长：{$userInfo.sSkill}</span></p>
-  </div>
+<body>
+		<section class="course_style_v1 gray_bg section_padding">
+      <div class="container d-flex justify-content-center">
+        <form style="width:800px" action="{:U("Home/Index/savePersonInfo")}">
+          <div class="form-group">
+            <label for="inputName">用户名</label>
+            <input type="text" class="form-control" value="zwc" id="inputName" readonly="readonly">
+          </div>
+          <div class="form-group">
+            <label for="inputGroup">组号</label>
+            <input type="text" class="form-control" id="inputGroup" value="{$userInfo.iGroupId}" placeholder="" readonly="readonly">
+          </div>
+          <div class="form-group">
+            <label for="inputPosition">是否为组长</label>
+            <input type="text" class="form-control" id="inputPosition" value="{$userInfo.iIsHeadman}" readonly="readonly">
+          </div>
+          <div class="form-group">
+            <label for="inputLikes">兴趣爱好</label>
+            <div class="col-lg-12">
+                <textarea class="form_control" id="inputLikes" placeholder="" name="likes">{$userInfo.sLike}</textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputLikes">个人特长</label>
+            <div class="col-lg-12">
+                <textarea class="form_control" placeholder="" name="skills">{$userInfo.sSkill}</textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top:10px">保存</button>
+        </form>
+      </div>
+     
+       
 </body>
 </html>

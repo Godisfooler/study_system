@@ -9,6 +9,8 @@ class IndexController extends Controller
     {
         if(is_login()){
 	        $this->uid = is_login();
+            $userInfo = M('ucenter_member')->find($this->uid);
+            $this->assign('userInfo',$userInfo);
         }else{
             $this->redirect('Home/Member/login');
         }
@@ -23,9 +25,22 @@ class IndexController extends Controller
     //个人信息页面
     public function personInfo(){
         //数据库查询用户信息
-        $res = M('user_info')->where(['uid'=>$this->uid])->find();
-        $this->assign('userInfo',$res);//渲染到前端页面
+        $userInfo = M('ucenter_member')->find($this->uid);
+        $userInfo['iIsHeadman'] = $userInfo['iIsHeadman']>0?'是':'否';
+        $this->assign('userInfo',$userInfo);
         $this->Display();
+    }
+
+    //个人信息保存
+    public function savePersonInfo(){
+        $data = [];
+        $data['sLike'] = I('likes');
+        $data['sSkill'] = I('skills');
+
+        $result = M('ucenter_member')->where(['id'=>$this->uid])->save($data);
+        echo '<script>alert("保存成功");window.location.href="personInfo.html";</script>';exit;
+        $this->redirect('Home/Index/personInfo');
+        $this->ajaxReturn(['status'=>1,'message'=>'保存成功！']);
     }
     
     //问题列表

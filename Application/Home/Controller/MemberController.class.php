@@ -106,6 +106,7 @@ class MemberController extends Controller
     public function logout(){
         session('user_auth', null);
         session('user_auth_sign', null);
+        $this->redirect('Home/Member/login');
     }
 
     /**
