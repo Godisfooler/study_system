@@ -120,6 +120,7 @@ class MemberController extends Controller
         $auth = array(
             'uid'             => $user['id'],
             'username'        => $user['username'],
+            'iType'           => $user['iType'],
             'last_login_time' => $user['last_login_time'],
         );
 
