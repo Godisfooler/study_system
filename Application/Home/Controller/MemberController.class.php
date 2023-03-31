@@ -32,7 +32,7 @@ class MemberController extends Controller
     public function loginAction($username = '',$password = ''){
         $this->username = $username;
         $this->password = $password;
-        
+        //判断账号密码是否为空
         if(!empty($this->username) || !empty($this->password)){
             
             $username = $this->username;
@@ -50,8 +50,10 @@ class MemberController extends Controller
             }
 
             $this->uid = $userInfo['id'];
+            //记住登录信息
             $this->autoLogin($userInfo);
             if (is_login()) {
+                //跳转到首页
                 redirect(U(C('AFTER_LOGIN_JUMP_URL')));
             }
         }else{
@@ -117,7 +119,7 @@ class MemberController extends Controller
         /* 记录登录SESSION */
         $auth = array(
             'uid'             => $user['id'],
-            'username'        => $user['nickname'],
+            'username'        => $user['username'],
             'last_login_time' => $user['last_login_time'],
         );
 
