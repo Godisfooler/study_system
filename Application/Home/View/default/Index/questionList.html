@@ -1,0 +1,51 @@
+<html>
+	<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+		<title>问题讨论区</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="__CSS__/main.css" />
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+			<!-- Main -->
+				<section id="main">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 col-12-medium">
+								<div class="content">
+
+									<!-- Content -->
+
+										<article class="box page-content">
+
+											<header>
+												<h2>问题列表</h2>
+                        <volist name="question_list" id="list">
+                          <p><a href="{:U('Home/Index/questionDetail')}?questionId={$list.id}">{$list.sTitle}</a></p>
+                          <ul class="meta">
+                            <li class="icon fa-clock">发布时间：{$list.date}</li>
+                            <li class="icon fa-comments">回答数：{$list.count}</li>
+                          </ul>
+                          <section>
+                            <p>
+                              {$list.sContent}
+                            </p>
+                          </section>
+                        </volist>
+											</header>
+
+							
+										</article>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			<!-- Footer -->
+
+		</div>
+	</body>
+</html>
