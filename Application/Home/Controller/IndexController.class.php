@@ -103,6 +103,7 @@ class IndexController extends Controller
         $this->Display();
     }
 
+    //问题详情
     public function questionDetail($questionId){
         $list = M('question_list q')
         ->field('q.*, COUNT(a.id) AS count')
@@ -111,6 +112,7 @@ class IndexController extends Controller
         ->find();
         $list['date'] = date("Y-m-d H:i",$list['iAddTime']);
 
+        //加载该问题所有回复
         $answerList = M('answer_list a')
         ->field('a.*,um.username,f.sPath,f.sOriName')
         ->join('ucenter_member um ON a.uid = um.id','LEFT')
@@ -198,6 +200,38 @@ class IndexController extends Controller
         }
     }
 
+    //学生列表
+    public function studentList(){
+        $userInfo = session('user_auth');
+        if($userInfo['iType'] != 1){
+            $this->error("无权限！");
+        }
+        $studentList = M('ucenter_member um')
+        ->field('um.*,COUNT(a.id) AS count')
+        ->join('answer_list as a ON um.id=a.uid','LEFT')
+        ->where(['um.iType'=>0])
+        ->group('um.id')
+        ->select();
+        foreach($studentList as &$student){
+            $student['iIsHeadman'] = $student['iIsHeadman']>0?'是':'否';
+        }
+        $this->assign('studentList',$studentList);
+        $this->assign('pageType','studentList');
+        $this->Display();
+    }
+
+    //学生点评
+    public function studentApprise(){
+        $uid = I('uid');
+        $comment = I('comment');
+        $res = M('ucenter_member')->where(['id'=>$uid])->save(['sApprise'=>$comment]);
+        if($res){
+            $this->ajaxReturn(['status'=>1,'评价成功！']);
+        }else{
+            $this->ajaxReturn(['status'=>0,'评价失败！']);
+        }
+    }
+
     //下载文件
     public function downloadById(){
         $fileId = I('fileId');
@@ -265,4 +299,5 @@ class IndexController extends Controller
         }
         fclose($fp);
     }
+
 }

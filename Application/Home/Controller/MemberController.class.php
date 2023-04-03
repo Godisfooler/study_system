@@ -52,10 +52,11 @@ class MemberController extends Controller
             $this->uid = $userInfo['id'];
             //记住登录信息
             $this->autoLogin($userInfo);
-            if (is_login()) {
-                //跳转到首页
-                redirect(U(C('AFTER_LOGIN_JUMP_URL')));
-            }
+            $this->ajaxReturn(array('status'=>1,'code'=>'10000','msg'=>'登录成功','jumpUrl'=>U(C('AFTER_LOGIN_JUMP_URL'))));
+            // if (is_login()) {
+            //     //跳转到首页
+            //     redirect(U(C('AFTER_LOGIN_JUMP_URL')));
+            // }
         }else{
             $this->ajaxReturn(array('status'=>0,'code'=>'10001','msg'=>'参数错误','data'=>array()));
         }

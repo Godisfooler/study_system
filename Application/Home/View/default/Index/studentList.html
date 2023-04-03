@@ -1,0 +1,141 @@
+<html>
+	<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+		<title>学生列表</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="__CSS__/main.css" />
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+.popup {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
+.popup-content {
+	background-color: white;
+	padding: 40px;
+	border-radius: 5px;
+	width: 80%;
+	max-width: 400px;
+	height: 60%;
+	max-height: 240px;
+	overflow: auto;
+}
+
+.popup input {
+	display: block;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	width: 100%;
+}
+.saveBtn{
+	width: 30%;
+	height: 40px;
+	padding: 10px;
+}
+.close-button {
+	float:right;
+	position: relative;
+	top: -30px;
+	right: -20px;
+	font-size: 2.2em;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	color: #333;
+}
+</style>	
+</head>
+<body class="is-preload">
+	<section id="main">
+		<div class="container">
+			<h3>学生列表：</h3>
+			<table>
+				<thead>
+				  <tr>
+					<th>学生用户名</th>
+					<th>组号</th>
+					<th>是否为组长</th>
+					<th>回答次数</th>
+					<th>学习评价</th>
+					<th>操作</th>
+				  </tr>
+				</thead>
+				<tbody>
+					<volist name="studentList" id="student">
+						<tr>
+							<td>{$student.username}</td>
+							<td>{$student.iGroupId}</td>
+							<td>{$student.iIsHeadman}</td>
+							<td>{$student.count}</td>
+							<td id="id_{$student.id}">{$student.sApprise}</td>
+							<td onclick="showPopup({$student.id})" style="text-decoration: underline;cursor:pointer;">评价</td>
+						  </tr>
+					</volist>
+				</tbody>
+			  </table>
+		</div>
+		<div id="popup" class="popup" style="display:none">
+			<div class="popup-content">
+				<span class="close-button" onclick="closePopup()">×</span>
+				<label for="comment">请输入评价:</label>
+				<input type="text" id="comment">
+				<button onclick="" class="saveBtn">保存</button>
+			</div>
+		</div>
+		<div id="comment-list"></div>
+	</section>
+
+	<script>
+		function closePopup() {
+			document.getElementById("popup").style.display = "none";
+		}
+		function showPopup(id) {
+			$("#comment").val('');
+			$(".saveBtn").attr('onclick',"saveComment("+id+")");
+			document.getElementById("popup").style.display = "flex";
+		}
+		
+		function saveComment(id) {
+			var comment = document.getElementById("comment").value;
+			$.ajax({
+				url: '/Home/Index/studentApprise', // 后端处理数据的URL
+				type: 'POST',
+				data:{'uid':id,'comment':comment},
+				success: function(response) {
+					if(response.status == 1){
+						$("#id_"+id).html(comment);
+						document.getElementById("popup").style.display = "none";
+					}else{
+					}
+				},
+				error: function(response) {
+					// 处理错误响应
+				}
+			});
+		}
+	</script>
+</body>
+</html>

@@ -21,10 +21,17 @@
             <nav id="nav">
                 <ul>
                     <li data-active="index"><a href="index.html">首页</a></li>
-                    <li data-active="questionList"><a href="{:U('Home/Index/questionList')}">问题讨论</a></li>
-                    <li data-active="appraiseList"><a href="{:U('Home/Index/appraiseList')}">学习评价</a></li>
+                    <li data-active="questionList"><a href="{:U('Home/Index/questionList')}">问题讨论</a>
+                        <if condition="$userInfo.iType GT 0">
+                            <ul class="" style="user-select: none; display: none; position: absolute;">
+                                <li style="white-space: nowrap;"><a href="{:U('Home/Index/questionPublish')}" style="display: block;">发布问题</a></li>
+                            </ul>
+                        </if>
+                    </li>
+                    <if condition="$userInfo.iType GT 0">
+                        <li data-active="studentList"><a href="{:U('Home/Index/studentList')}">学习评价</a></li>
+                    </if>
                     <li data-active="personInfo"><a href="{:U('Home/Index/personInfo')}">个人中心</a></li>
-                 
                 </ul>
                 <div class="top_right">
                     <if condition="$userInfo.id GT 0">

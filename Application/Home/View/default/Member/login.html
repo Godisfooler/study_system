@@ -3,9 +3,24 @@
     <title>首页</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8" />
-    <!-- <link href="__CSS__/font.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="__CSS__/login-style.css" type="text/css" media="all" />
-    <!-- <link rel="stylesheet" href="__CSS__/font-awesome.min.css" type="text/css" media="all"> -->
+    <link rel="stylesheet" href="__CSS__/main.css" />
+<style>
+.container{
+    max-width: 120%;
+    width: 120%;
+}
+.main-hotair{
+    max-width: 800px;
+    width: 800px;
+}
+body {
+    padding-top: 0em;
+}
+section {
+    margin-bottom: 0em;
+}
+</style>    
 </head>
 
 <body>
@@ -16,14 +31,14 @@
             <div class="workinghny-form-grid">
                 <div class="main-hotair">
                     <div class="content-wthree">
+                        <form onsubmit="return false;">
                         <h2>登录</h2>
                         <p>你的账户</p>
-                        <form action="{:U("Home/Member/loginAction")}" method="post">
-                            <input type="text" class="username" name="username" placeholder="用户名" required="">
-                            <input type="password" class="password" name="password" placeholder="密码" required="">
-                            <button class="btn" type="submit">登录</button>
-                        </form>
+                        <input type="text" class="username" name="username" placeholder="用户名" required="">
+                        <input type="password" class="password" name="password" placeholder="密码" required="">
+                        <button class="btn" onclick="loginAction()">登录</button>
                         <p class="account">没有账户？ <a href="{:U('Home/Member/regist')}">注册</a></p>
+                        </form>
                     </div>
                     <div class="w3l_form align-self">
                         <div class="left_grid_info">
@@ -34,8 +49,29 @@
             </div>
         </div>
     </section>
-
+    <script src="__JS__/jquery.min.js"></script>
     <script>
+        function loginAction(id) {
+            var username = $("input[name=username]").val();
+            var password = $("input[name=password]").val();
+            if(username != '' && password !=''){
+                $.ajax({
+				url: '/Home/Member/loginAction', // 后端处理数据的URL
+				type: 'POST',
+				data:{'username':username,'password':password},
+				success: function(response) {
+					if(response.status == 1){
+                        window.location.href = response.jumpUrl;
+					}else{
+                        alert(response.msg);
+					}
+				},
+				error: function(response) {
+					// 处理错误响应
+				}
+			});
+            }
+		}
     </script>
 
 </body>

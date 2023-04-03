@@ -57,8 +57,6 @@
 }
 .dianping{
 	float: right;
-	position: relative;
-	top: -30px;
 }
 .dianping button:hover {
   background-color: #4CAF50;
@@ -108,7 +106,6 @@ header p{
 	color: #333;
 }
 #dianping_form{
-	padding-top: 40px;
 	padding-left: 10px;
 }
 #dianping_form input{
@@ -117,9 +114,6 @@ header p{
 }
 #dianping_form button:hover {
   background-color: #4CAF50;
-}
-#dianping_list{
-	margin-top: 60px;
 }
 #list_detail{
 	max-width: 1200px;
@@ -134,6 +128,9 @@ header p{
 }
 .downSpan:hover{
 	cursor:pointer;
+}
+.clear{
+	clear: both;
 }
 </style>	
 </head>
@@ -177,6 +174,7 @@ header p{
 															</if>	
 															<if condition="$userInfo.iType GT 0 || $userInfo.iIsHeadman EQ 1">
 																<div class="dianping"><button onclick="showList(this)">查看点评</button> <button class="dianping_btn" onclick="showForm(this)">点评</button></div>
+																<div class="clear"></div>
 																<div id="dianping_list" style="display:none;">
 																	<volist name="answer.appriseList" id="appriselist">
 																		<div id="list_detail">
@@ -192,6 +190,7 @@ header p{
 																		</div>
 																	</volist>
 																</div>
+																<div class="clear"></div>
 																<div id="dianping_form" style="display:none;">
 																	<label for="pros">优点：</label><br>
 																	<input type="text" id="pros" name="pros" value=""><br>
