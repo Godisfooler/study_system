@@ -1,154 +1,67 @@
-<!-- Start search wrapper -->
-<link rel="shortcut icon" href="__IMG__/favicon.ico" type="image/png">
-<!-- All css here -->
-<!-- Bootstrap css -->
-<link rel="stylesheet" href="__CSS__/bootstrap/css/bootstrap.min.css">
-<!-- fontaweosme css -->
-<link rel="stylesheet" href="__CSS__/fonts/fontawesome/css/all.css">
-<!-- Flaticon css -->
-<link rel="stylesheet" href="__CSS__/fonts/flaticon/flaticon.css">
-<!-- slick slider css -->
-<link rel="stylesheet" href="__CSS__/plugin/slick/slick.css">
-<link rel="stylesheet" href="__CSS__/plugin/slick/slick-theme.css">
-<!-- magnific css -->
-<link rel="stylesheet" href="__CSS__/plugin/magnific/magnific-popup.css">
-<!-- jquery-ui css -->
-<link rel="stylesheet" href="__CSS__/plugin/jquery_ui/jquery-ui.css">
-<!-- nice_select css -->
-<link rel="stylesheet" href="__CSS__/plugin/nice_select/nice-select.css">
-<!-- nice_select css -->
-<link rel="stylesheet" href="__CSS__/plugin/sidebar_menu/sidebar-menu.css">
-<!-- Style css -->
-<link rel="stylesheet" href="__CSS__/style.css">
-<!-- Responsive css -->
-<link rel="stylesheet" href="__CSS__/responsive.css">
-<div class="search_wrapper">
-	<a href="#" class="close_link"><i class="fas fa-times"></i></a>
-	<form>
-		<input type="text" class="form_control" placeholder="search here">
-	</form>
-</div>
-<!-- End search wrapper -->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="__CSS__/main.css" />
+    <style>
+        .top_right{
+            float: right;
+            padding: 10px;
+            position: relative;
+            top:-130px;
+            right:20px;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body class="homepage is-preload">
+    <div id="page-wrapper">
+        <!-- Nav -->
+            <nav id="nav">
+                <ul>
+                    <li data-active="index"><a href="index.html">首页</a></li>
+                    <li data-active="questionList"><a href="{:U('Home/Index/questionList')}">问题讨论</a>
+                        <if condition="$userInfo.iType GT 0">
+                            <ul class="" style="user-select: none; display: none; position: absolute;">
+                                <li style="white-space: nowrap;"><a href="{:U('Home/Index/questionPublish')}" style="display: block;">发布问题</a></li>
+                            </ul>
+                        </if>
+                    </li>
+                    <if condition="$userInfo.iType GT 0">
+                        <li data-active="studentList"><a href="{:U('Home/Index/studentList')}">学习评价</a></li>
+                    </if>
+                    <li data-active="personInfo"><a href="{:U('Home/Index/personInfo')}">个人中心</a></li>
+                </ul>
+                <div class="top_right">
+                    <if condition="$userInfo.id GT 0">
+                        <p>{$userInfo.username}/<a href="{:U("Home/Member/logout")}">退出</a></p>
+                    <else/>
+                        <span><a href="#">登录</a>/<a href="#">注册</a>{$userInfo.username}</span>
+                    </if>
+                </div>
+            </nav>
+    </div>
 
-<div class="header_top_bar">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-6">
-				<div class="top_left">
-				</div>
-			</div>
-			<div class="col-lg-6">
-				<div class="top_right">
-					<if condition="$userInfo.id GT 0">
-						<p><a href="#">{$userInfo.username}</a>/<a href="{:U("Home/Member/logout")}">退出</a></p>
-					<else/>
-						<p><a href="#">登录</a>/<a href="#">注册</a>{$userInfo.username}</p>
-					</if>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- Start Header area -->
-<header class="header_area header_v1">
-	<div class="container">
-		<div class="site_menu">
-			<div class="row align-items-center">
-				<div class="col-lg-2">
-					<div class="site_logo">
-						<a href="index.html"><img src="assets/images/logo_1.png" alt=""></a>
-					</div>
-				</div>
-				<div class="col-lg-10">
-					<div class="primary_menu">
-						<nav class="main_menu">
-							<ul>
-								<!-- <li><a href="index.html"></a>
-									<ul class="sub-menu">
-										<li><a href="index.html">Home v1</a></li>
-										<li><a href="home_v2.html">Home v2</a></li>
-										<li><a href="home_v3.html">Home v3</a></li>
-									</ul>
-								</li> -->
-								<li><a href="{:U('Home/Index/Index')}">首页</a>
-									<ul class="sub-menu">
-										<li><a href="course.html">course</a></li>
-										<li><a href="single_course.html">Course Details</a></li>
-									</ul>
-								</li>
-								<li><a href="#">问题讨论</a>
-									<ul class="sub-menu">
-										<li><a href="about.html">发布问题</a></li>
-										<li><a href="team.html"></a></li>
-										<li><a href="event.html">Event</a></li>
-										<li><a href="single_event.html">Event Details</a></li>
-									</ul>
-								</li>
-								<li><a href="#">学习评价</a>
-									<ul class="sub-menu">
-										<li><a href="blog.html">News</a></li>
-										<li><a href="single_blog.html">News Details</a></li>
-									</ul>
-								</li>
-								<li><a href="{:U('Home/Index/personInfo')}">个人中心</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- mobile_wrapper -->
-		<div class="mobile_wrapper">
-			<div class="row align-items-center">
-				<div class="col-lg-6 col-6">
-					<div class="brand_logo">
-						<a href="index.html"><img src="assets/images/logo_1.png" class="img-fluid" alt=""></a>
-					</div>
-				</div>
-				<div class="col-lg-6 col-6">
-					<div class="mobile_menu">
-						<ul>
-							<li><a href="#" class="menu_icon"><i class="fas fa-bars"></i></a></li>
-							<li><a href="#" class="search_btn"><i class="fas fa-search"></i></a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="sidenav_menu">
-				<div class="close_icon">
-					<a href="#" class="close_btn"><i class="fas fa-times"></i></a>
-				</div>
-				<ul class="sidebar-menu">
-					<li class="menu-item-has-children"><a href="index.html">Home</a>
-						<ul class="sub-menu">
-							<li><a href="index.html">Home v1</a></li>
-							<li><a href="home_v2.html">Home v2</a></li>
-							<li><a href="home_v3.html">Home v3</a></li>
-						</ul>
-					</li>
-					<li class="menu-item-has-children"><a href="course.html">Course</a>
-						<ul class="sub-menu">
-							<li><a href="course.html">course</a></li>
-							<li><a href="single_course.html">Course Details</a></li>
-						</ul>
-					</li>
-					<li class="menu-item-has-children"><a href="#">Pages</a>
-						<ul class="sub-menu">
-							<li><a href="about.html">About us</a></li>
-							<li><a href="team.html">Our Team</a></li>
-							<li><a href="event.html">Event</a></li>
-							<li><a href="single_event.html">Event Details</a></li>
-						</ul>
-					</li>
-					<li class="menu-item-has-children"><a href="#">News</a>
-						<ul class="sub-menu">
-							<li><a href="blog.html">News</a></li>
-							<li><a href="single_blog.html">News Details</a></li>
-						</ul>
-					</li>
-					<li><a href="contact.html">Contact</a></li>
-				</ul>
-			</div>
-		</div><!-- mobile_wrapper -->
-	</div>
-</header><!-- End Header area -->
+    <script src="__JS__/jquery.min.js"></script>
+    <script src="__JS__/jquery.dropotron.min.js"></script>
+    <script src="__JS__/jquery.scrolly.min.js"></script>
+    <script src="__JS__/browser.min.js"></script>
+    <script src="__JS__/breakpoints.min.js"></script>
+    <script src="__JS__/util.js"></script>
+    <script src="__JS__/main.js"></script>
+</body>
+<script>
+    var pageType = "{$pageType}";
+    var navItems = document.querySelectorAll('nav li');
+    // 遍历所有选项
+    navItems.forEach(function(item) {
+    // 如果选项的 data-active 值与当前页面标识相同，则设置为选中状态
+    if (item.dataset.active === pageType) {
+        item.classList.add('current');
+    } else {
+        item.classList.remove('current');
+    }
+    });
+</script>
+</html>
