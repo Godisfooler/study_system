@@ -5,13 +5,12 @@ use Think\Controller;
 class IndexController extends Controller
 {
     public $uid;
-    public $userInfo;
     protected function _initialize()
     {
         if(is_login()){
 	        $this->uid = is_login();
-            $this->userInfo = M('ucenter_member')->find($this->uid);
-            $this->assign('userInfo',$this->userInfo);
+            $userInfo = M('ucenter_member')->find($this->uid);
+            $this->assign('userInfo',$userInfo);
         }else{
             $this->redirect('Home/Member/login');
         }
@@ -20,7 +19,6 @@ class IndexController extends Controller
      * 首页
      */
     public function index($accredit='',$uid = ''){
-        $this->assign('pageType','index');
         $this->Display();//显示对应html文件
     }
 
@@ -99,124 +97,6 @@ class IndexController extends Controller
         ->select();
         var_dump($list); 
         $this->assign('answer_list',$list);//渲染到前端页面
-        $this->assign('pageType','appraiseList');
-        $this->Display();
-    }
-
-    //问题详情
-    public function questionDetail($questionId){
-        $list = M('question_list q')
-        ->field('q.*, COUNT(a.id) AS count')
-        ->join('answer_list a ON a.pid = q.id','LEFT')
-        ->where(['q.id'=>$questionId])
-        ->find();
-        $list['date'] = date("Y-m-d H:i",$list['iAddTime']);
-
-        //加载该问题所有回复
-        $answerList = M('answer_list a')
-        ->field('a.*,um.username,f.sPath,f.sOriName')
-        ->join('ucenter_member um ON a.uid = um.id','LEFT')
-        ->join('file f ON a.iFileId = f.id','LEFT')
-        ->where(['a.pid'=>$questionId])
-        ->order('a.iAddTime DESC')
-        ->select();
-        foreach($answerList as &$answer){
-            $answer['date'] = date("Y-m-d H:i",$answer['iAddTime']);
-            $answer['appriseList'] = $this->getAppriseList($answer['id']);
-        }
-        $this->assign('questionDetail',$list);
-        $this->assign('answerList',$answerList);
-        $this->assign('pageType','questionList');
-        $this->Display();
-    }
-
-    public function answerAppraise(){
-        $post = I('');
-        if(empty($post)){
-            $this->ajaxReturn(['status'=>0,'msg'=>'请填入有效内容！']);
-        }
-        $data = [];
-        $data['uid'] = $this->uid;
-        $data['iAnswerId'] = $post['answerId'];
-        $data['sMerit'] = $post['pros'];
-        $data['sShortComing'] = $post['cons'];
-        $data['sSuggestions'] = $post['suggestions'];
-        $data['sTrCode'] = md5($data['uid'].$data['iAnswerId'].$data['sMerit'].$data['sShortComing'].$post['suggestions']);
-        if(M('appraise_list')->where(['sTrCode'=>$data['sTrCode']])->find()){
-            $this->ajaxReturn(['status'=>0,'msg'=>'请勿提交重复内容！']);
-        }
-        $data['iAddTime'] = time();
-        $res = M('appraise_list')->add($data);
-        if($res){
-            $data['date'] = date("Y-m-d H:i",$data['iAddTime']);
-            $data['username'] = $this->userInfo['username'];
-            $this->ajaxReturn(['status'=>1,'msg'=>'点评成功！','data'=>$data]);
-        }
-    }
-
-    public function getAppriseList($id){
-       $list = M('appraise_list a')
-       ->field('a.*,um.username')
-       ->join('ucenter_member um ON a.uid = um.id','LEFT')
-       ->where(['iAnswerId'=>$id])
-       ->order('a.iAddTime DESC')
-       ->select();
-
-       foreach($list as &$l){
-          $l['date'] = date("Y-m-d H:i",$l['iAddTime']);
-       }
-       return $list;
-    }
-
-    public function saveReply(){
-        $data = [];
-        $config = C('DOWNLOAD_UPLOAD');
-        $config['maxSize'] = 10*1024*1024;
-        $upload = new \Think\Upload($config);// 实例化上传类
-        // 上传单个文件
-        if(!empty($_FILES['file'])){
-            $info   =   $upload->uploadOne($_FILES['file']);
-            $oriFileName = $_FILES['file']['name'];
-        }
-        if(!empty($info)){
-            $fileData = [];
-            $fileData['sOriName'] = $oriFileName;
-            $savePath = $config['rootPath'].$info['savepath'];
-            $fileData['sPath'] = $savePath.$info['savename'];
-            $fileId = M('file')->add($fileData);
-            $data['iFileId'] = $fileId;
-        }elseif(empty(I('reply_text'))){
-            $this->ajaxReturn(['status'=>0,'msg'=>'请输入回复内容']);
-        }
-        $data['pid'] = I('questionId');
-        $data['sContent'] = I('reply_text');
-        $data['uid'] = $this->uid;
-        $data['iAddTime'] = time();
-        $res = M('answer_list')->add($data);
-        if($res){
-            $this->ajaxReturn(['status'=>1,'msg'=>'回复成功']);
-        }else{
-            $this->ajaxReturn(['status'=>0,'msg'=>'回复失败']);
-        }
-    }
-
-    //学生列表
-    public function studentList(){
-        $userInfo = session('user_auth');
-        if($userInfo['iType'] != 1){
-            $this->error("无权限！");
-        }
-        $studentList = M('ucenter_member um')
-        ->field('um.*,COUNT(a.id) AS count')
-        ->join('answer_list as a ON um.id=a.uid','LEFT')
-        ->where(['um.iType'=>0])
-        ->group('um.id')
-        ->select();
-        foreach($studentList as &$student){
-            $student['iIsHeadman'] = $student['iIsHeadman']>0?'是':'否';
-        }
-        $this->assign('studentList',$studentList);
-        $this->assign('pageType','studentList');
         $this->Display();
     }
 
