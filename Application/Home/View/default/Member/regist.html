@@ -72,7 +72,7 @@ section {
                     <div class="content-wthree">
                         <h2>注册</h2>
                         <p>你的账户</p>
-                        <form id="login_form" action="{:U("Home/Member/registAction")}" method="post">
+                        <form id="regist_form" onsubmit="return false;" method="post">
                           <label for="username">用户名：</label>
                           <input type="text" id="username" name="username" placeholder="请输入" required>
                           <label for="username">密码：</label>
@@ -105,11 +105,13 @@ section {
                                 <span class="arrow"></span>
                               </div>
                             </div>
-                            <label for="username">兴趣爱好：</label>
-                            <input type="text" class="text" name="likes" placeholder="请输入" required="">
-                            <label for="username">特长：</label>
-                            <input type="text" class="text" name="skills" placeholder="请输入" required="">
-                            <button class="btn" type="submit">注册</button>
+                            <div class="likes">
+                              <label for="username">兴趣爱好：</label>
+                              <input type="text" class="text" name="likes" placeholder="请输入">
+                              <label for="username">特长：</label>
+                              <input type="text" class="text" name="skills" placeholder="请输入">
+                            </div>
+                            <button class="btn" type="submit" onclick="registAction()">注册</button>
                         </form>
                         <p class="account">已有账户？ <a href="{:U('Home/Member/login')}">登录</a></p>
                     </div>
@@ -122,7 +124,7 @@ section {
             </div>
         </div>
     </section>
-
+    <script src="__JS__/jquery.min.js"></script>
     <script>
         const typeSelect = document.getElementById("user_type")
         typeSelect.addEventListener("change", event => {
@@ -130,11 +132,40 @@ section {
             if(selectedType > 0){
               $(".group").hide();
               $(".position").hide();
+              $(".likes").hide();
             }else{
               $(".group").show();
               $(".position").show();
+              $(".likes").show();
             }
         })
+
+        function registAction(id) {
+            var username = $("input[name=username]").val();
+            var password = $("input[name=password]").val();
+            var formData = $('#regist_form').serializeArray();
+            var datas = {};
+            for( x in formData ){  
+              datas[formData[x].name] = formData[x].value;  
+            }  
+            if(username != '' && password !=''){
+                $.ajax({
+                  url: '/Home/Member/registAction', // 后端处理数据的URL
+                  type: 'POST',
+                  data:datas,
+                  success: function(response) {
+                    if(response.status == 1){
+                          window.location.href = response.jumpUrl;
+                    }else{
+                          alert(response.message);
+                    }
+                  },
+                  error: function(response) {
+                    // 处理错误响应
+                  }
+              });
+            }
+		}
     </script>
 
 </body>

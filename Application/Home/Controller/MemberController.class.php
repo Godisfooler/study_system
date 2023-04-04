@@ -95,7 +95,7 @@ class MemberController extends Controller
             $saveData['iGroupId'] = $iGroupId;
             $res = M('ucenter_member')->add($saveData);
             if($res){
-                redirect(U('Home/Member/loginSuccess'));
+                $this->ajaxReturn(['status'=>1,'message'=>'注册成功！','jumpUrl'=>U('Home/Member/login')]);
             }else{
                 $this->ajaxReturn(['status'=>0,'message'=>'注册失败！']);
             }

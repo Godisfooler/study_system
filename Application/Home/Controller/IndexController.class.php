@@ -45,6 +45,9 @@ class IndexController extends Controller
         // $this->ajaxReturn(['status'=>1,'message'=>'保存成功！']);
     }
     
+    public function publish(){
+        $this->Display();
+    }
     //问题发布
     public function questionPublish(){
         //判断是否为老师，不是老师提示没权限
@@ -103,6 +106,32 @@ class IndexController extends Controller
         $this->Display();
     }
 
+    //问题详情
+    public function questionDetail($questionId){
+        $list = M('question_list q')
+        ->field('q.*, COUNT(a.id) AS count')
+        ->join('answer_list a ON a.pid = q.id','LEFT')
+        ->where(['q.id'=>$questionId])
+        ->find();
+        $list['date'] = date("Y-m-d H:i",$list['iAddTime']);
+
+        //加载该问题所有回复
+        $answerList = M('answer_list a')
+        ->field('a.*,um.username,f.sPath,f.sOriName')
+        ->join('ucenter_member um ON a.uid = um.id','LEFT')
+        ->join('file f ON a.iFileId = f.id','LEFT')
+        ->where(['a.pid'=>$questionId])
+        ->order('a.iAddTime DESC')
+        ->select();
+        foreach($answerList as &$answer){
+            $answer['date'] = date("Y-m-d H:i",$answer['iAddTime']);
+            $answer['appriseList'] = $this->getAppriseList($answer['id']);
+        }
+        $this->assign('questionDetail',$list);
+        $this->assign('answerList',$answerList);
+        $this->assign('pageType','questionList');
+        $this->Display();
+    }
 
     public function answerAppraise(){
         $post = I('');
