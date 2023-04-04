@@ -20,27 +20,29 @@
             <label for="inputName">用户名</label>
             <input type="text" class="form-control" value="zwc" id="inputName" readonly="readonly">
           </div>
-          <div class="form-group">
-            <label for="inputGroup">组号</label>
-            <input type="text" class="form-control" id="inputGroup" value="{$userInfo.iGroupId}" placeholder="" readonly="readonly">
-          </div>
-          <div class="form-group">
-            <label for="inputPosition">是否为组长</label>
-            <input type="text" class="form-control" id="inputPosition" value="{$userInfo.iIsHeadman}" readonly="readonly">
-          </div>
-          <div class="form-group">
-            <label for="inputLikes">兴趣爱好</label>
-            <div class="col-lg-12">
-                <textarea class="form_control" id="inputLikes" placeholder="" name="likes">{$userInfo.sLike}</textarea>
+          <if condition="$userInfo.iType NEQ 1">
+            <div class="form-group">
+              <label for="inputGroup">组号</label>
+              <input type="text" class="form-control" id="inputGroup" value="{$userInfo.iGroupId}" placeholder="" readonly="readonly">
             </div>
-          </div>
-          <div class="form-group">
-            <label for="inputSkill">个人特长</label>
-            <div class="col-lg-12">
-                <textarea class="form_control" id="inputSkill" placeholder="" name="skills">{$userInfo.sSkill}</textarea>
+            <div class="form-group">
+              <label for="inputPosition">是否为组长</label>
+              <input type="text" class="form-control" id="inputPosition" value="{$userInfo.iIsHeadman}" readonly="readonly">
             </div>
-          </div>
-          <button type="submit" disabled id="save_btn" class="btn btn-primary" style="margin-top:10px">保存</button>
+            <div class="form-group">
+              <label for="inputLikes">兴趣爱好</label>
+              <div class="col-lg-12">
+                  <textarea class="form_control" id="inputLikes" placeholder="" name="likes">{$userInfo.sLike}</textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputSkill">个人特长</label>
+              <div class="col-lg-12">
+                  <textarea class="form_control" id="inputSkill" placeholder="" name="skills">{$userInfo.sSkill}</textarea>
+              </div>
+            </div>
+            <button type="submit" disabled id="save_btn" class="btn btn-primary" style="margin-top:10px">保存</button>
+          </if>
         </form>
       </div>
 </body>

@@ -36,14 +36,4 @@ return array(
         '__FILE__' => __ROOT__ . '/Public/report',
         '__STATIC_VERSION__' => static_version()
     ),
-
-    'UPDATE_FIELDS_BY_TYPE' => [
-        16=>["sTitle","sContent","iRepostsCount","iCommentsCount","iAttitudesCount"],//微博
-        4096=>["sTitle","sContent","iCommentsCount","iVoteupCount"],//知乎
-        512=>["sTitle","sContent","iRepostsCount","iCommentsCount","iVoteupCount"],//雪球
-        8192=>["sTitle","sContent","iRepostsCount","iCommentsCount","iVoteupCount"],//facebook
-        32768=>["sTitle","sContent","iCommentsCount","iVoteupCount"],//Instagram
-        16384=>["sTitle","sContent","iRepostsCount","iCommentsCount","iVoteupCount"],//Twitter
-        65536=>["sTitle","sContent","iCommentsCount","iViewingCount","iVoteupCount"],//YouTube
-    ]
 );

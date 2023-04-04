@@ -303,4 +303,10 @@ class IndexController extends Controller
         fclose($fp);
     }
 
+    //管理员管理页面
+    public function manage(){
+        if($this->userInfo['isAdmin']){
+            $this->error('无权限！');
+        }
+    }
 }
