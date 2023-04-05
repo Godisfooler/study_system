@@ -132,6 +132,11 @@ header p{
 .clear{
 	clear: both;
 }
+.target{
+	font-size: 16px;
+	padding: 5px;
+	border: 1px solid #ddd;
+}
 </style>	
 </head>
 <body class="is-preload">
@@ -139,14 +144,16 @@ header p{
 			<!-- Main -->
 				<section id="main">
 					<div class="container">
-						<div class="row">
-							<div class="col-12-medium setpadding">
+							<div class="setpadding">
 								<h3><a class="back_href" href="{:U('Home/Index/questionList')}">>返回列表</a></h3>
 								<div class="content">
 										<article class="box page-content">
 											<header>
 												<h2>问题详情</h2>
 												<p calss="title">{$questionDetail.sTitle}</p>
+												<if condition="$userInfo.iType GT 0 || $userInfo.iIsAdmin GT 0">
+													<span class="target">学习目标：{$questionDetail.sTarget}</span>
+												</if>
 												<ul class="meta">
 													<li class="icon fa-clock">发布时间：{$questionDetail.date}</li>
 													<li class="icon fa-comments">回答数：{$questionDetail.count}</li>
@@ -219,7 +226,6 @@ header p{
 										  
 								</div>
 							</div>
-						</div>
 					</div>
 				</section>
 

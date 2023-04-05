@@ -22,16 +22,19 @@
                 <ul>
                     <li data-active="index"><a href="index.html">首页</a></li>
                     <li data-active="questionList"><a href="{:U('Home/Index/questionList')}">问题讨论</a>
-                        <if condition="$userInfo.iType GT 0">
-                            <ul class="" style="user-select: none; display: none; position: absolute;">
-                                <li style="white-space: nowrap;"><a href="{:U('Home/Index/questionPublish')}" style="display: block;">发布问题</a></li>
+                        <if condition="$userInfo.iType GT 0 || $userInfo.iIsAdmin EQ 1">
+                            <ul class="" style="user-select: none; display: none; position: absolute;text-align: center;">
+                                <li style="white-space: nowrap;"><a href="{:U('Home/Index/publish')}" style="display: block;">发布问题</a></li>
                             </ul>
                         </if>
                     </li>
-                    <if condition="$userInfo.iType GT 0">
+                    <if condition="$userInfo.iType GT 0 || $userInfo.iIsAdmin EQ 1">
                         <li data-active="studentList"><a href="{:U('Home/Index/studentList')}">学习评价</a></li>
                     </if>
                     <li data-active="personInfo"><a href="{:U('Home/Index/personInfo')}">个人中心</a></li>
+                    <if condition="$userInfo.iIsAdmin EQ 1">
+                        <li data-active="manage"><a href="{:U('Home/Index/manage')}">用户管理</a></li>
+                    </if>
                 </ul>
                 <div class="top_right">
                     <if condition="$userInfo.id GT 0">

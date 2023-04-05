@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+	<title>个人中心</title>
+    <!-- all meta -->
+    <meta charset="UTF-8">
+    <style>
+      .form-group label{
+        margin: 0px;
+      }
+      .form-group{
+        margin-bottom: 15px;
+      }
+      .back_href{
+        text-decoration: underline;
+      }
+      .back_href:hover{
+        text-decoration: underline;
+      }
+    </style>
+</head>
+<body>
+  <section id="main">
+    <div class="container d-flex justify-content-center" style="max-width: 800px">
+      <h3><a class="back_href" href="{:U('Home/Index/manage')}">>返回用户列表</a></h3>
+      <h3>个人信息：</h3>
+        <form id="edit_form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="inputName">用户名</label>
+            <input type="text" class="form-control" value="{$userDetail.username}" id="inputName" readonly="readonly">
+          </div>
+          <div class="form-group">
+            <label for="inputType">账户类型</label>
+            <select id="user_type" name="user_type">
+              <option value="0">学生</option>
+              <option value="1">老师</option>
+            </select>
+          </div>
+            <div class="student_div">
+              <div class="form-group">
+                <label for="inputGroup">组号</label>
+                <select id="group_select" name="group_select">
+                  <option value="1">1组</option>
+                  <option value="2">2组</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="inputPosition">是否为组长</label>
+                <select id="position_select" name="position_select">
+                  <option value="0" selected>否</option>
+                  <option value="1">是</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="inputLikes">兴趣爱好</label>
+                <div class="col-lg-12">
+                    <textarea class="form_control" id="inputLikes" placeholder="" name="likes"><if condition="$userDetail.iType EQ 0">{$userDetail.sLike}</if></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputSkill">个人特长</label>
+                <div class="col-lg-12">
+                    <textarea class="form_control" id="inputSkill" placeholder="" name="skills"><if condition="$userDetail.iType EQ 0">{$userDetail.sSkill}</if></textarea>
+                </div>
+              </div>
+            </div>
+          <button onclick="saveUser()" disabled id="save_btn" class="btn btn-primary" style="margin-top:10px">保存</button>
+        </form>
+      </div>
+</body>
+
+<script>
+  window.userType = "{$userDetail.iType}";
+  $("#user_type").val(window.userType);
+  if(window.userType > 0){
+    window.param_warning = 'userType='+window.userType;
+    $(".student_div").hide();
+  }else{
+    window.param_warning = 'userType='+"{$userDetail.iType}"+'&iGroupId='+"{$userDetail.iGroupId}"+'&iIsHeadman='+"{$userDetail.iIsHeadman}"+'&likes='+"{$userDetail.sLike}"+'&skill='+"{$userDetail.sSkill}";
+    $("#position_select").val("{$userDetail.iIsHeadman}");
+    $("#group_select").val("{$userDetail.iGroupId}");
+  }
+  const typeSelect = document.getElementById("user_type")
+  typeSelect.addEventListener("change", event => {
+      const selectedType = event.target.value
+      if(selectedType > 0){
+        window.userType = 1;
+        window.param_warning = 'userType='+"{$userDetail.iType}";
+        $(".student_div").hide();
+      }else{
+        window.userType = 0;
+        window.param_warning = 'userType='+"{$userDetail.iType}"+'&iGroupId='+"{$userDetail.iGroupId}"+'&iIsHeadman='+"{$userDetail.iIsHeadman}"+'&likes=&skill=';
+        $(".student_div").show();
+      }
+  })
+
+  function getParamForWarning() {
+    var param = '';
+    param += 'userType='+$("#user_type").val();
+    if(window.userType == 0){
+      param += '&iGroupId='+$("#group_select").val();
+      param += '&iIsHeadman='+$("#position_select").val();
+      param += '&likes='+$("#inputLikes").val();
+      param += '&skill='+$("#inputSkill").val();
+    }
+    return param;
+  }
+
+
+    window.temp_time_setInterval_warning = setInterval('attemptChangeWarning();',500);
+    function attemptChangeWarning() {
+        var param = getParamForWarning();
+
+        if(window.param_warning === param) {
+          $('#save_btn').addClass('keep_btn_grey').attr('disabled','disabled').removeAttr('onclick');
+        }else{
+          $('#save_btn').removeAttr('disabled').removeClass('keep_btn_grey').attr('onclick','saveUser()');
+        }
+    }
+
+    function saveUser(id) {
+      var formData = $('#edit_form').serializeArray();
+      var datas = {};
+      for( x in formData ){  
+        if(window.userType > 0){
+           if(formData[x].name != 'user_type'){
+             formData[x].name = '';
+             continue;
+           }
+        }
+        datas[formData[x].name] = formData[x].value;  
+      }  
+      datas['uid'] = "{$userDetail.id}";
+			$.ajax({
+				url: '/Home/Index/saveUser', // 后端处理数据的URL
+				type: 'POST',
+				data:datas,
+				success: function(response) {
+					if(response.status == 1){
+            window.location.href = response.jumpUrl;
+					}else{
+            alert(response.msg);
+					}
+				},
+				error: function(response) {
+					// 处理错误响应
+				}
+			});
+		}
+
+</script>
+</html>

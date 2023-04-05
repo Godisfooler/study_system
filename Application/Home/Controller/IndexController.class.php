@@ -29,6 +29,7 @@ class IndexController extends Controller
         //数据库查询用户信息
         $userInfo = M('ucenter_member')->find($this->uid);
         $userInfo['iIsHeadman'] = $userInfo['iIsHeadman']>0?'是':'否';
+        $userInfo['userType'] = $userInfo['iType']>0?'老师':'学生';
         $this->assign('userInfo',$userInfo);
         $this->assign('pageType','personInfo');
         $this->Display();
@@ -46,25 +47,27 @@ class IndexController extends Controller
     }
     
     public function publish(){
+        $this->assign('pageType','questionList');
         $this->Display();
     }
     //问题发布
     public function questionPublish(){
         //判断是否为老师，不是老师提示没权限
         $userInfo = session('user_auth');
-        if($userInfo['iType'] != 1){
-            // $this->error("无权限！");
+        if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
+            $this->error("无权限！");
         }
         $post = I('');//接收参数
-        if(empty($post)){
-            // $this->ajaxReturn(['status'=>0,'message'=>'参数错误！']);
-        }
         $data = [];
         $data['sTitle'] = $post['title'];
-        $data['sContent'] = $post['content'];
-        // M('question_list')->add($data);
-        $this->success("发布成功！","questionList.html");exit;
-        echo '<script>alert("发布成功！");window.location.href="questionList.html";</script>';exit;
+        $data['sContent'] = $post['describe'];
+        $data['sTarget'] = $post['study_target'];
+        $data['iAddTime'] = time();
+        $res = M('question_list')->add($data);
+        if($res){
+            $this->success("发布成功！","questionList.html");
+        }
+        // echo '<script>alert("发布成功！");window.location.href="questionList.html";</script>';exit;
     }
 
     //问题列表
@@ -75,6 +78,7 @@ class IndexController extends Controller
         ->join('ucenter_member as um ON um.id=q.uid','LEFT')
         ->join('answer_list as a ON a.pid=q.id','LEFT')
         ->group('q.id')
+        ->order('q.iAddTime DESC')
         ->select();
         foreach($list as &$l){
             if(mb_strlen($l['sContent']) > 150){
@@ -90,7 +94,7 @@ class IndexController extends Controller
      //学生列表，仅老师账号可见
      public function appraiseList(){
         $userInfo = session('user_auth');
-        if($userInfo['iType'] != 1){
+        if($userInfo['iType'] != 1 && $this->userInfo['iIsAdmin'] != 1){
             $this->error("无权限！");
         }
         //数据库查询学生列表并统计学生回答次数
@@ -206,7 +210,7 @@ class IndexController extends Controller
     //学生列表
     public function studentList(){
         $userInfo = session('user_auth');
-        if($userInfo['iType'] != 1){
+        if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
             $this->error("无权限！");
         }
         $studentList = M('ucenter_member um')
@@ -305,8 +309,45 @@ class IndexController extends Controller
 
     //管理员管理页面
     public function manage(){
-        if($this->userInfo['isAdmin']){
+        if($this->userInfo['iIsAdmin'] != 1){
             $this->error('无权限！');
+        }
+        $userList = M('ucenter_member')->where(['iIsAdmin'=>0])->select();
+        foreach($userList as &$user){
+            $user['userType'] = $user['iType']>0?'老师':'学生';
+            $user['regist_date'] = date("Y-m-d H:i",$user['reg_time']);
+        }
+        $this->assign('userList',$userList);
+        $this->assign('pageType','manage');
+        $this->Display();
+    }
+
+    //管理员编辑用户信息
+    public function editUser($uid){
+        if($this->userInfo['iIsAdmin'] != 1){
+            $this->error('无权限！');
+        }
+        $userInfo = M('ucenter_member')->find($uid);
+        $this->assign('userDetail',$userInfo);
+        $this->assign('pageType','manage');
+        $this->Display();
+    }
+
+    //编辑保存
+    public function saveUser(){
+        $post = I('');
+        $uid = $post['uid'];
+        $data = [];
+        $data['iType'] = $post['user_type'];
+        $data['iGroupId'] = $post['group_select'];
+        $data['iIsHeadman'] = $post['position_select'];
+        $data['sLike'] = $post['likes'];
+        $data['sSkill'] = $post['skills'];
+        $res = M('ucenter_member')->where(['id'=>$uid])->save($data);
+        if($res){
+            $this->ajaxReturn(['status'=>1,'msg'=>'保存成功！','jumpUrl'=>'/Home/Index/manage.html']);
+        }else{
+            $this->ajaxReturn(['status'=>0,'msg'=>'保存失败！']);
         }
     }
 }

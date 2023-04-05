@@ -93,6 +93,7 @@ class MemberController extends Controller
             $saveData['sSkill'] = $sSkill;
             $saveData['iIsHeadman'] = $iIsHeadman;
             $saveData['iGroupId'] = $iGroupId;
+            $saveData['reg_time'] = time();
             $res = M('ucenter_member')->add($saveData);
             if($res){
                 $this->ajaxReturn(['status'=>1,'message'=>'注册成功！','jumpUrl'=>U('Home/Member/login')]);
@@ -122,7 +123,7 @@ class MemberController extends Controller
             'uid'             => $user['id'],
             'username'        => $user['username'],
             'iType'           => $user['iType'],
-            'last_login_time' => $user['last_login_time'],
+            'iIsAdmin'        => $user['iIsAdmin'],
         );
 
         session('user_auth', $auth);
