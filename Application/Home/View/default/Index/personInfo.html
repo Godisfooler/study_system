@@ -20,14 +20,18 @@
       <h3>个人信息：</h3>
         <form action="{:U("Home/Index/savePersonInfo")}">
           <div class="form-group">
-            <label for="inputName">用户名</label>
-            <input type="text" class="form-control" value="{$userInfo.username}" id="inputName" readonly="readonly">
+            <label for="inputName">姓名</label>
+            <input type="text" class="form-control" name="username" value="{$userInfo.realname}" id="inputName">
           </div>
           <div class="form-group">
             <label for="inputType">账户类型</label>
             <input type="text" class="form-control" value="{$userInfo.userType}" id="inputType" readonly="readonly">
           </div>
-          <if condition="$userInfo.iType NEQ 1">
+          <div class="form-group">
+            <label for="password">修改密码</label>
+            <input type="password" class="form-control" value="" placeholder="请输入新密码" name="password" id="password">
+          </div>
+          <if condition="$userInfo.iType EQ 0">
             <div class="form-group">
               <label for="inputGroup">组号</label>
               <input type="text" class="form-control" id="inputGroup" value="{$userInfo.iGroupId}" placeholder="" readonly="readonly">
@@ -48,18 +52,20 @@
                   <textarea class="form_control" id="inputSkill" placeholder="" name="skills">{$userInfo.sSkill}</textarea>
               </div>
             </div>
-            <button type="submit" disabled id="save_btn" class="btn btn-primary" style="margin-top:10px">保存</button>
           </if>
+          <button type="submit" disabled id="save_btn" class="btn btn-primary" style="margin-top:10px">保存</button>
         </form>
       </div>
 </body>
 
 <script>
-  window.param_warning = 'likes='+"{$userInfo.sLike}"+'&skill='+"{$userInfo.sSkill}";
+  window.param_warning = 'username='+"{$userInfo.realname}"+'&likes='+"{$userInfo.sLike}"+'&skill='+"{$userInfo.sSkill}"+'&password=';
   function getParamForWarning() {
     var param = '';
-    param += 'likes='+$("#inputLikes").val();
-    param += '&skill='+$("#inputSkill").val();
+    param += 'username='+($("#inputName").val()==undefined?'':$("#inputName").val());
+    param += '&likes='+($("#inputLikes").val()==undefined?'':$("#inputLikes").val());
+    param += '&skill='+($("#inputSkill").val()==undefined?'':$("#inputLikes").val());
+    param += '&password='+$("#password").val();
     return param;
   }
 
@@ -67,7 +73,6 @@
     window.temp_time_setInterval_warning = setInterval('attemptChangeWarning();',500);
     function attemptChangeWarning() {
         var param = getParamForWarning();
-
         if(window.param_warning === param) {
           $('#save_btn').addClass('keep_btn_grey').attr('disabled','disabled');
         }else{

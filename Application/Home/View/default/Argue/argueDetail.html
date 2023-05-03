@@ -1,0 +1,468 @@
+<html>
+	<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+		<title>辩论详情</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="__CSS__/main.css" />
+
+	<style>
+.comment button{
+  padding: 10px 20px;
+  background-color: #b1ddab;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.dianping{
+	float: right;
+}
+.dianping button:hover {
+  background-color: #4CAF50;
+}
+.reply_container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+}
+h1 {
+	font-size: 24px;
+	margin-top: 0;
+	margin-bottom: 20px;
+	text-align: center;
+}
+.comment {
+	margin-bottom: 20px;
+	padding: 10px;
+	background-color: #f2f2f2;
+	border: 1px solid #ddd;
+	height: 110px;
+}
+.comment .meta {
+	font-size: 12px;
+	line-height: 1;
+	color: #999;
+}
+.comment .content {
+	font-size: 16px;
+	line-height: 1;
+	margin-bottom: 10px;
+}
+.back_href{
+	text-decoration: underline;
+}
+.back_href:hover{
+	text-decoration: underline;
+}
+.setpadding{
+	padding: 20px;
+}
+header p{
+	color: #333;
+}
+#dianping_form{
+	padding-left: 10px;
+}
+#dianping_form input{
+	margin-bottom: 10px;
+	width: 80%;
+}
+#dianping_form button:hover {
+  background-color: #4CAF50;
+}
+#list_detail{
+	max-width: 1200px;
+	margin: 10px 10px 10px 10px;
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+}
+#dianping_list p{
+	margin-bottom:0;
+	border-bottom:  1px solid #ddd;
+}
+.clear{
+	clear: both;
+}
+.container {
+        display: flex;
+        justify-content: space-between;
+      }
+      
+      .view {
+        width: 45%;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      
+      .view h2 {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+      
+      .view p {
+        margin-top: 0;
+      }
+      
+      .votes {
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+      }
+      
+      .votes button {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+      
+      .votes span {
+        font-weight: bold;
+      }
+	  .buttons {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      
+      button {
+        margin-right: 20px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+      
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      
+      .comments {
+        margin-top: 50px;
+      }
+      
+      .comments h3 {
+        text-align: center;
+      }
+      
+      textarea {
+        display: block;
+        margin-top: 10px;
+        width: 100%;
+        height: 80px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        resize: none;
+      }
+      
+.popup {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
+.popup-content {
+	background-color: white;
+	padding: 40px;
+	border-radius: 5px;
+	width: 80%;
+	max-width: 400px;
+	height: 60%;
+	max-height: 240px;
+	overflow: auto;
+}
+
+.popup input {
+	display: block;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	width: 100%;
+}
+.saveBtn{
+	width: 30%;
+	height: 40px;
+	padding: 10px;
+}
+.close-button {
+	float:right;
+	position: relative;
+	top: -30px;
+	right: -20px;
+	font-size: 2.2em;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	color: #333;
+}
+</style>	
+</head>
+<body class="is-preload">
+		<div id="page-wrapper">
+			<!-- Main -->
+				<section id="main">
+					<div class="container">
+							<div class="setpadding">
+								<h3><a class="back_href" href="{:U('Home/Argue/argueList')}">>返回辩论列表</a></h3>
+								<div class="content">
+										<article class="box page-content">
+											<header>
+												<h2>辩论详情</h2>
+												<p calss="title">{$questionDetail.sTitle}</p>
+												<ul class="meta">
+													<li class="icon fa-clock">发布时间：{$questionDetail.date}</li>
+												</ul>
+											<section>
+												<p>
+												{$questionDetail.sDescribe}
+												</p>
+											</section>
+											</header>
+											  <div class="container">
+												<div class="view" id="pro-view">
+												  <h1>正方观点</h1>
+												  <p>{$questionDetail.sSupport}</p>
+												  <div class="buttons">
+													<button id="pro-button" onclick="vote('pro')">点赞 (<span id="pro-votes">{$questionDetail.iSupportCount}</span>)</button>
+													<button id="pro-comment-button" onclick="showPopup(1)">评论</button>
+												  </div>
+												  <div class="comments" id="pro-comments">
+													<h3>评论列表</h3>
+													<div class="reply_container">
+														<volist name="supportList" id="answer">
+															<div class="comment">
+																<div class="meta">
+																	<p>评论者：{$answer.realname}  &nbsp;&nbsp;&nbsp;&nbsp;发表于：{$answer.date}</p>
+																</div>
+																<div class="content">
+																	<p>{$answer.sReply}</p>
+																</div>
+															</div>
+														</volist>
+													</div>
+												  </div>
+												</div>
+												<div style="font-size: 40px;color: #4CAF50;padding-top: 50px;">vs</div>
+												<div class="view" id="con-view">
+												  <h1>反方观点</h1>
+												  <p>{$questionDetail.sAgainst}</p>
+												  <div class="buttons">
+													<button id="con-button" onclick="vote('con')">点赞 (<span id="con-votes">{$questionDetail.iAgainstCount}</span>)</button>
+													<button id="con-comment-button" onclick="showPopup(0)">评论</button>
+												  </div>
+												  <div class="comments" id="con-comments">
+													<h3>评论列表</h3>
+													<div class="reply_container">
+														<volist name="againstList" id="answer">
+															<div class="comment">
+																<div class="meta">
+																	<p>评论者：{$answer.realname}  &nbsp;&nbsp;&nbsp;&nbsp;发表于：{$answer.date}</p>
+																</div>
+																<div class="content">
+																	<p>{$answer.sReply}</p>
+																</div>
+															</div>
+														</volist>
+													</div>
+												  </div>
+												</div>
+											  </div>
+										</article>
+								</div>
+							</div>
+					</div>
+					<div id="popup" class="popup" style="display:none">
+						<div class="popup-content">
+							<span class="close-button" onclick="closePopup()">×</span>
+							<label for="comment">请输入评论:</label>
+							<input type="text" id="comment">
+							<button onclick="" class="saveBtn">提交</button>
+						</div>
+					</div>
+				</section>
+
+			<!-- Footer -->
+
+		</div>
+
+		<script>
+			let argueid = "{$questionDetail.id}";
+
+			function closePopup() {
+				document.getElementById("popup").style.display = "none";
+			}
+			function showPopup(type) {
+				$("#comment").val('');
+				$(".saveBtn").attr('onclick',"saveComment("+type+")");
+				document.getElementById("popup").style.display = "flex";
+			}
+			function saveComment(type) {
+				var comment = document.getElementById("comment").value;
+				$.ajax({
+					url: '/Home/Argue/saveComment', // 后端处理数据的URL
+					type: 'POST',
+					data:{'type':type,'comment':comment,'pid':argueid},
+					success: function(response) {
+						if(response.status == 1){
+							window.location.reload();
+							// $("#id_"+id).html(comment);
+							// document.getElementById("popup").style.display = "none";
+						}else{
+						}
+					},
+					error: function(response) {
+						// 处理错误响应
+					}
+				});
+		}
+			// 初始化点赞数和评论数
+			let proVotes = "{$questionDetail.iSupportCount}";
+			let ori_proVotes = "{$questionDetail.iSupportCount}";
+			let conVotes = "{$questionDetail.iAgainstCount}";
+			let ori_conVotes = "{$questionDetail.iAgainstCount}";
+			let proComments = [];
+			let conComments = [];
+			// 更新点赞数和评论数的显示
+			function updateView(id) {
+				if (id === 'pro') {
+					document.getElementById('pro-votes').textContent = proVotes;
+					let proCommentDiv = document.getElementById('pro-comments');
+					proCommentDiv.innerHTML = '<h3>评论</h3>' + proComments.join('');
+				} else {
+					document.getElementById('con-votes').textContent = conVotes;
+					let conCommentDiv = document.getElementById('con-comments');
+					conCommentDiv.innerHTML = '<h3>评论</h3>' + conComments.join('');
+				}
+			}
+			 // 点赞函数
+			 function vote(id) {
+			if (id === 'pro') {
+				proVotes++;
+				document.getElementById('pro-button').innerHTML = `点赞 (<span id="pro-votes">${proVotes}</span>)`;
+				document.getElementById('pro-button').disabled = true;
+				if(conVotes > 0 && conVotes > ori_conVotes){
+					conVotes--;
+				}
+				document.getElementById('con-button').innerHTML = `点赞 (<span id="con-votes">${conVotes}</span>)`;
+				document.getElementById('con-button').disabled = false;
+				$.ajax({
+					url: '/Home/Argue/agreeCount', // 后端处理数据的URL
+					type: 'POST',
+					data: {'id':argueid,'support_count':proVotes,'against_count':conVotes},
+					success: function(response) {
+						// 处理成功响应
+					},
+					error: function(response) {
+						// 处理错误响应
+					}
+				});
+				// updateView('pro');
+			} else {
+				conVotes++;
+				document.getElementById('con-button').innerHTML = `点赞 (<span id="con-votes">${conVotes}</span>)`;
+				document.getElementById('con-button').disabled = true;
+				if(proVotes > 0 && proVotes > ori_proVotes){
+					proVotes--;
+				}
+				document.getElementById('pro-button').innerHTML = `点赞 (<span id="pro-votes">${proVotes}</span>)`;;
+				document.getElementById('pro-button').disabled = false;
+				$.ajax({
+					url: '/Home/Argue/agreeCount', // 后端处理数据的URL
+					type: 'POST',
+					data: {'id':argueid,'support_count':proVotes,'against_count':conVotes},
+					success: function(response) {
+						// 处理成功响应
+					},
+					error: function(response) {
+						// 处理错误响应
+					}
+				});
+				// updateView('con');
+			}
+			}
+			
+			// 添加评论函数
+			function comment(id) {
+				let commentText = prompt('请输入评论');
+				if (commentText) {
+				if (id === 'pro') {
+					proComments.push(`<p>${commentText}</p>`);
+					updateView('pro');
+				} else {
+					conComments.push(`<p>${commentText}</p>`);
+					updateView('con');
+				}
+				}
+			}
+			function submitForm(obj) {
+			  var answerId = $(obj).attr('answerId');
+			  var pros = $(obj).parent().find("#pros").val();
+			  var cons = $(obj).parent().find("#cons").val();
+			  var suggestions = $(obj).parent().find("#suggestions").val();
+			  if(pros == '' && cons =='' && suggestions==''){
+			  }else{
+				$.ajax({
+					url: '/Home/Index/answerAppraise', // 后端处理数据的URL
+					type: 'POST',
+					data: {'answerId':answerId,'pros':pros,'cons':cons,'suggestions':suggestions},
+					success: function(response) {
+						// 处理成功响应
+					},
+					error: function(response) {
+						// 处理错误响应
+					}
+				});
+			  }
+			}
+
+		var upfiles = {};
+		function getFileSize(fileObj){
+			upfiles = fileObj.files;
+			console.log(upfiles);
+    	}
+		function submitReply(){
+			var questionId = "{$_GET['questionId']}";
+			var reply_text = $("#reply").val();
+			var formData = new FormData();
+			formData.append('file',upfiles[0]);
+			formData.append('questionId',questionId);
+			formData.append('reply_text',reply_text);
+			$.ajax({
+				url: '/Home/Index/saveReply', // 后端处理数据的URL
+				type: 'POST',
+				data:formData,
+				dataType:'JSON',
+				processData:false,
+				contentType:false,
+				success: function(response) {
+					if(response.status == 1){
+						$('.reply_text').html(' '+response.msg);
+						window.location.reload();
+					}else{
+						var tempHtml = '<span style="color:red">'+response.msg+'</span>';
+						$('.reply_text').html(tempHtml);
+					}
+				},
+				error: function(response) {
+					// 处理错误响应
+				}
+			});
+		}
+</script>
+	</body>
+</html>

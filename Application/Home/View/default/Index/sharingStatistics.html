@@ -1,0 +1,58 @@
+<html>
+	<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+		<title>学生列表</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="__CSS__/main.css" />
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+.container{
+	width: 40%;
+}
+</style>	
+</head>
+<body class="is-preload">
+	<section id="main">
+		<div class="container">
+			<h3>学生资源分享统计：</h3>
+			<table>
+				<thead>
+				  <tr>
+					<th>学生姓名</th>
+					<th>组号</th>
+					<th>是否为组长</th>
+					<th>分享次数</th>
+				  </tr>
+				</thead>
+				<tbody>
+					<volist name="studentList" id="student">
+						<tr>
+							<td>{$student.realname}</td>
+							<td>{$student.iGroupId}</td>
+							<td>{$student.iIsHeadman}</td>
+							<td>{$student.count}</td>
+							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->
+							<!-- <td onclick="showPopup({$student.id})" style="text-decoration: underline;cursor:pointer;">评价</td> -->
+						  </tr>
+					</volist>
+				</tbody>
+			  </table>
+		</div>
+	</section>
+</body>
+</html>

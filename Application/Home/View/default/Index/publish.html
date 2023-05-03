@@ -23,16 +23,6 @@
       <h3>问题发布：</h3>
         <form action="{:U("Home/Index/questionPublish")}">
           <div class="form-group">
-            <label for="study_target">学习目标</label>
-            <div class="selection-box">
-              <select id="study_target" name="study_target">
-                <option value="提升学习能力" selected>提升学习能力</option>
-                <option value="解决问题">解决问题</option>
-                <option value="提升交流能力">提升交流能力</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
             <label for="inputTitle">标题</label>
             <input type="text" class="form-control" id="inputTitle" value="" name="title" required>
           </div>
@@ -40,32 +30,9 @@
             <label for="inputDescribe">详细描述</label>
             <textarea class="form_control" id="inputDescribe" placeholder="" name="describe" required></textarea>
           </div>
-          <button type="submit" disabled id="save_btn" class="btn btn-primary" style="margin-top:10px">发布</button>
+          <button type="submit" id="save_btn" class="btn btn-primary" style="margin-top:10px">发布</button>
         </form>
       </div>
 </body>
 
-<script>
-  window.param_warning = 'likes='+"{$userInfo.sLike}"+'&skill='+"{$userInfo.sSkill}";
-  function getParamForWarning() {
-    var param = '';
-    param += 'likes='+$("#inputLikes").val();
-    param += '&skill='+$("#inputSkill").val();
-    return param;
-  }
-
-
-    window.temp_time_setInterval_warning = setInterval('attemptChangeWarning();',500);
-    function attemptChangeWarning() {
-        var param = getParamForWarning();
-
-        if(window.param_warning === param) {
-          $('#save_btn').addClass('keep_btn_grey').attr('disabled','disabled');
-        }else{
-          $('#save_btn').removeAttr('disabled').removeClass('keep_btn_grey');
-        }
-    }
-
-
-</script>
 </html>

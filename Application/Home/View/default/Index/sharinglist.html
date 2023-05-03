@@ -1,0 +1,85 @@
+<html>
+	<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+		<title>即时信息资源共享</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="__CSS__/main.css" />
+		<style>
+			.reply-container button:hover {
+				background-color: #4CAF50;
+				}
+				.reply_container {
+					max-width: 1200px;
+					margin: 0 auto;
+					padding: 20px;
+					background-color: #fff;
+					border: 1px solid #ddd;
+				}
+				h1 {
+					font-size: 24px;
+					margin-top: 0;
+					margin-bottom: 20px;
+					text-align: center;
+				}
+				.comment {
+					margin-bottom: 20px;
+					padding: 10px;
+					/* background-color: #f2f2f2; */
+					border: 1px solid #ddd;
+				}
+				.comment .meta {
+					font-size: 12px;
+					line-height: 1;
+					color: #999;
+				}
+				.comment .content {
+					font-size: 16px;
+					line-height: 1;
+					margin-bottom: 10px;
+				}
+		</style>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+			<!-- Main -->
+				<section id="main">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 col-12-medium">
+								<div class="content">
+
+									<!-- Content -->
+
+						<article class="box page-content">
+
+						<header>
+                          <section>
+							<h3>共享资源列表：</h3>
+							
+							<div class="reply_container">
+								<volist name="share_list" id="list">
+									<div class="comment">
+										<a href="{:U('Home/Index/shareDetail')}?id={$list.id}">{$list.sTitle}</a>
+										<div class="meta">
+											<p>发布人：{$list.username}  &nbsp;&nbsp;&nbsp;&nbsp;发布于：{$list.date}</p>
+										</div>
+									</div>
+								</volist>
+							</div>
+						</section>
+						</header>
+
+						</article>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			<!-- Footer -->
+
+		</div>
+	</body>
+</html>

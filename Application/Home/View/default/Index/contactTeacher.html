@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<include file="./Application/Home/View/default/Public/nav.html" />
+			<title>学生列表</title>
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+			<link rel="stylesheet" href="__CSS__/main.css" />
+  
+	<style>
+		.contactForm{
+			margin-top:20px;
+		}
+		#message{
+			max-height: 200px;
+		}
+	</style>
+	</head>
+  <body>
+	<div class="container" style="max-width: 600px;">
+		<form action="{:U('Home/Index/saveMessage')}" method="post" class="contactForm">
+			<label for="teacher">请选择您要联系的老师：</label>
+			<select id="teacher" name="teacher">
+			  <volist name="teacher_list" id="teacher">
+			  	<option value="{$teacher.id}">{$teacher.realname}</option>
+			  </volist>
+			</select>
+			<br>
+			<label for="message">请输入您要留言的内容：</label>
+			<textarea id="message" name="message" rows="10" cols="50"></textarea>
+			<br><br>
+			<input type="submit" value="提交留言">
+		  </form>
+	</div>
+  </body>
+</html>

@@ -20,16 +20,18 @@
         <!-- Nav -->
             <nav id="nav">
                 <ul>
-                    <li data-active="index"><a href="index.html">首页</a></li>
-                    <li data-active="questionList"><a href="{:U('Home/Index/questionList')}">问题讨论</a>
+                    <!-- <li data-active="index"><a href="index.html">首页</a></li> -->
+                    <!-- <li data-active="questionList"><a href="{:U('Home/Index/questionList')}">问题讨论</a>
                         <if condition="$userInfo.iType GT 0 || $userInfo.iIsAdmin EQ 1">
                             <ul class="" style="user-select: none; display: none; position: absolute;text-align: center;">
                                 <li style="white-space: nowrap;"><a href="{:U('Home/Index/publish')}" style="display: block;">发布问题</a></li>
                             </ul>
                         </if>
-                    </li>
+                    </li> -->
                     <if condition="$userInfo.iType GT 0 || $userInfo.iIsAdmin EQ 1">
-                        <li data-active="studentList"><a href="{:U('Home/Index/studentList')}">学习评价</a></li>
+                        <li data-active="studentList"><a href="{:U('Home/Index/studentReachApprise')}">学生达成评价</a></li>
+                        <else/>
+                        <li data-active="contactTeacher"><a href="{:U('Home/Index/contactTeacher')}">联系教师</a></li>
                     </if>
                     <li data-active="personInfo"><a href="{:U('Home/Index/personInfo')}">个人中心</a></li>
                     <if condition="$userInfo.iIsAdmin EQ 1">
@@ -38,7 +40,7 @@
                 </ul>
                 <div class="top_right">
                     <if condition="$userInfo.id GT 0">
-                        <p>{$userInfo.username}/<a href="{:U("Home/Member/logout")}">退出</a></p>
+                        <p>{$userInfo.username_show}{$userInfo.type_info}，欢迎您/<a href="{:U("Home/Member/logout")}">退出</a></p>
                     <else/>
                         <span><a href="#">登录</a>/<a href="#">注册</a>{$userInfo.username}</span>
                     </if>

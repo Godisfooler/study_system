@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+	<title>辩论发布</title>
+    <!-- all meta -->
+    <meta charset="UTF-8">
+    <style>
+      .section_padding{
+        padding:30px;
+      }
+      form label{
+        margin: 0;
+      }
+      .form-group{
+        margin-bottom: 20px;
+      }
+    </style>
+</head>
+<body>
+  <section id="main">
+    <div class="container d-flex justify-content-center" style="max-width: 800px">
+      <h3>辩论发布：</h3>
+        <form action="{:U("Home/Argue/arguePublish")}">
+          <div class="form-group">
+            <label for="inputTitle">主题</label>
+            <input type="text" class="form-control" id="inputTitle" value="" name="title" required>
+          </div>
+          <div class="form-group">
+            <label for="inputTitle">正方</label>
+            <input type="text" class="form-control" id="inputTitle" value="" name="support" required>
+          </div>
+          <div class="form-group">
+            <label for="inputTitle">反方</label>
+            <input type="text" class="form-control" id="inputTitle" value="" name="against" required>
+          </div>
+          <div class="form-group">
+            <label for="inputDescribe">详细描述</label>
+            <textarea class="form_control" id="inputDescribe" placeholder="" name="describe" required></textarea>
+          </div>
+          <button type="submit" id="save_btn" class="btn btn-primary" style="margin-top:10px">发布</button>
+        </form>
+      </div>
+</body>
+
+</html>

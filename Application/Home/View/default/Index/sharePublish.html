@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+	<title>问题发布</title>
+    <!-- all meta -->
+    <meta charset="UTF-8">
+    <style>
+      .section_padding{
+        padding:30px;
+      }
+      form label{
+        margin: 0;
+      }
+      .form-group{
+        margin-bottom: 20px;
+      }
+    </style>
+</head>
+<body>
+  <section id="main">
+    <div class="container d-flex justify-content-center" style="max-width: 800px">
+      <h3>共享资源发布：</h3>
+        <form>
+          <div class="form-group">
+            <label for="inputTitle">标题</label>
+            <input type="text" class="form-control" id="inputTitle" value="" name="title" required>
+          </div>
+          <div class="form-group">
+            <label for="inputDescribe">详细描述</label>
+            <textarea class="form_control" id="inputDescribe" placeholder="" name="describe" required></textarea>
+          </div>
+          <div class="form-group">
+            <br>
+            <label for="file">上传文件：</label>
+            <input type="file" id="file" name="file" onchange="getFileSize(this)">
+            <br>
+          </div>
+
+          <button type="button" onclick="submitReply(this)" id="save_btn" class="btn btn-primary" style="margin-top:10px">发布</button>
+        </form>
+      </div>
+</body>
+
+<script>
+    var upfiles = {};
+		function getFileSize(fileObj){
+			upfiles = fileObj.files;
+			console.log(upfiles);
+    }
+		function submitReply(){
+			var title = $("#inputTitle").val();
+			var content = $("#inputDescribe").val();
+			var formData = new FormData();
+      console.log(formData);
+			formData.append('file',upfiles[0]);
+			formData.append('title',title);
+			formData.append('content',content);
+			$.ajax({
+				url: '/Home/Index/shareSave', // 后端处理数据的URL
+				type: 'POST',
+				data:formData,
+				dataType:'JSON',
+				processData:false,
+				contentType:false,
+				success: function(response) {
+          console.log(response)
+				},
+				error: function(response) {
+					// 处理错误响应
+				}
+			});
+		}
+
+</script>
+</html>

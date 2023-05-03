@@ -73,8 +73,9 @@ section {
                         <h2>注册</h2>
                         <p>你的账户</p>
                         <form id="regist_form" onsubmit="return false;" method="post">
-                          <label for="username">用户名：</label>
+                          <label for="username">账号：</label>
                           <input type="text" id="username" name="username" placeholder="请输入" required>
+                          <span id="tip"></span>
                           <label for="username">密码：</label>
                           <input type="password" class="password" name="password" placeholder="请输入" required>
                             <label for="username">账户类型：</label>
@@ -82,9 +83,12 @@ section {
                               <select id="user_type" name="user_type">
                                 <option value="0" selected>学生</option>
                                 <option value="1">老师</option>
+                                <option value="2">管理员</option>
                               </select>
                               <span class="arrow"></span>
                             </div>
+                            <label for="username">姓名：</label>
+                            <input type="text" id="realname" name="realname" placeholder="请输入" required>
                             <div class="group">
                               <label for="username">分组：</label>
                               <div class="selection-box">
@@ -126,6 +130,30 @@ section {
     </section>
     <script src="__JS__/jquery.min.js"></script>
     <script>
+      $(function(){
+        $('#username').blur(function(){
+          var uname = $(this).val();
+          $.ajax({
+          url: '/Home/Member/checkUsername',
+          type: 'POST',
+          data: {username:uname},
+          dataType: 'json',
+          success:function(res){
+            if(res.status == 0){
+                $('#tip').text('用户名已存在！');
+                $('#tip').css('color','red');
+            }else{
+                $('#tip').text('用户名可用');
+                $('#tip').css('color','#00FF00');
+            }
+          },
+          error:function(){
+            alert('请求出错！');
+          }
+          });
+        });
+        });
+
         const typeSelect = document.getElementById("user_type")
         typeSelect.addEventListener("change", event => {
             const selectedType = event.target.value

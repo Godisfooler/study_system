@@ -1,10 +1,86 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<include file="./Application/Home/View/default/Public/nav.html" />
-		<title>学习系统</title>
-	</head>
-	
-	<body class="homepage is-preload">
-	</body>
+<head>
+	<include file="./Application/Home/View/default/Public/nav.html" />
+	<title>学习系统</title>
+ <style>
+  .button {
+   width: 240px;
+   height: 70px;
+   background-color: #64cc56;
+   border: none;
+   color: white;
+   font-size: 18px;
+   cursor: pointer;
+   border-radius: 6px;
+   margin: 15px;
+   outline: none;
+   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
+   transition: all 0.2s ease-in-out;
+  }
+
+  .button:hover {
+   background-color: #2980b9;
+   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.4);
+   transform: translateY(-2px);
+  }
+
+  .button:active {
+   background-color: #217dbb;
+   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+   transform: translateY(1px);
+  }
+  .btndiv{
+	text-align: center;
+	margin-top: 100px;
+  }
+  .btndiv a{
+	color: #fff;
+	text-decoration: none;
+  }
+  .reply{
+	margin: 50px;
+	padding: 20px;
+	width: 50%;
+  }
+  .reply p{
+	margin: 10px;
+	width: 80%;
+  }
+  .reply_txt{
+	padding: 20px;
+	width: 80%;
+	border: 1px solid #ddd;
+	color:#6b7770;
+	font-size: 14px;
+  }
+  .msg{
+	border-bottom: 1px solid #ddd;
+  }
+ </style>
+</head>
+<body>
+ <div class="btndiv">
+	<if condition="$userInfo.iType GT 0 || $userInfo.iIsAdmin EQ 1">
+		<a href="{:U('Home/Index/publish')}"><button class="button">发布问题</button></a>
+		<a href="{:U('Home/Argue/publish')}"><button class="button">发布辩论</button></a>
+	<else/>
+		<a href="{:U('Home/Index/questionList')}"><button class="button">参与问题回答</button></a>
+		<a href="{:U('Home/Index/publish')}"><button class="button">参与辩论讨论</button></a>
+	</if>
+	<a href="{:U('Home/Index/sharinglist')}"><button class="button">即时信息资源共享</button></a>
+ </div>
+ <if condition="$userInfo.iType GT 0 || $userInfo.iIsAdmin EQ 1">
+  <div class="reply">
+    <p>学生留言：</p>
+    <div class="reply_txt">
+    <volist name="reply_list" id="list">
+        <p class="msg">{$list.date}  {$list.realname}：{$list.sMessage}</p>
+        <!-- <li class="icon fa-clock">发布时间：{$list.date}</li> -->
+        <!-- <li class="icon fa-comments">回答数：{$list.count}</li> -->
+      </volist>
+    </div>
+   </div>
+</if>
+</body>
 </html>

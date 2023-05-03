@@ -1,0 +1,59 @@
+<html>
+	<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+		<title>辩论情况</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="__CSS__/main.css" />
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+.container{
+	width: 40%;
+}
+</style>	
+</head>
+<body class="is-preload">
+	<section id="main">
+		<div class="container">
+			<h3>辩论情况统计：</h3>
+			<table>
+				<thead>
+				  <tr>
+					<th>辩论主题</th>
+					<th>时间</th>
+					<th>正方赞同数</th>
+					<th>反方赞同数</th>
+					<th>操作</th>
+				  </tr>
+				</thead>
+				<tbody>
+					<volist name="arguelist" id="list">
+						<tr>
+							<td>{$list.sTitle}</td>
+							<td>{$list.date}</td>
+							<td>{$list.iSupportCount}</td>
+							<td>{$list.iAgainstCount}</td>
+							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->
+							<td style="text-decoration: underline;cursor:pointer;"><a href="{:U('Home/Argue/argueStatisticsDetail')}?id={$list.id}">查看详情</a></td>
+						  </tr>
+					</volist>
+				</tbody>
+			  </table>
+		</div>
+	</section>
+</body>
+</html>

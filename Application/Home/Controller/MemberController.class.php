@@ -88,7 +88,11 @@ class MemberController extends Controller
             $saveData = [];
             $saveData['username'] = $username;
             $saveData['password'] = $password;
+            $saveData['realname'] = I('realname');
             $saveData['iType'] = $iType;
+            if($saveData['iType'] == 2){
+                $saveData['iIsAdmin'] = 1;
+            }
             $saveData['sLike'] = $sLike;
             $saveData['sSkill'] = $sSkill;
             $saveData['iIsHeadman'] = $iIsHeadman;
@@ -128,6 +132,16 @@ class MemberController extends Controller
 
         session('user_auth', $auth);
         session('user_auth_sign', data_auth_sign($auth));
+
+    }
+
+    public function checkUsername(){
+        $username = I('username');//用户名
+        if(M('ucenter_member')->where(['username'=>$username])->find()){
+            $this->ajaxReturn(['status'=>0,'message'=>'用户名已存在！']);
+        }else{
+            $this->ajaxReturn(['status'=>1]);
+        }
 
     }
 }

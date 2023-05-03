@@ -11,6 +11,9 @@ class IndexController extends Controller
         if(is_login()){
 	        $this->uid = is_login();
             $this->userInfo = M('ucenter_member')->find($this->uid);
+            $this->userInfo['type_info'] = $this->userInfo['iType'] == 1 ? '老师':'';
+            $this->userInfo['type_info'] = $this->userInfo['iType'] == 1 ? '老师':($this->userInfo['iType'] == 2?'':'学生');
+            $this->userInfo['username_show'] = $this->userInfo['iType'] == 1 ? mb_substr($this->userInfo['realname'],0,1):$this->userInfo['realname'];
             $this->assign('userInfo',$this->userInfo);
         }else{
             $this->redirect('Home/Member/login');
@@ -19,7 +22,21 @@ class IndexController extends Controller
     /**
      * 首页
      */
-    public function index($accredit='',$uid = ''){
+    public function index(){
+        $list = M('student_msgs m')
+        ->field('m.*,um.realname')
+        ->join('ucenter_member as um ON um.id=m.uid','LEFT')
+        ->where(['iTeacherId'=>$this->uid])
+        ->order('m.iAddTime DESC')
+        ->limit(5)
+        ->select();
+        foreach($list as &$l){
+            // if(mb_strlen($l['sContent']) > 150){
+            //     $l['sContent'] = mb_substr($l['sContent'],0,150).'...';
+            // }
+            $l['date'] = date("Y-m-d H:i",$l['iAddTime']);
+        }
+        $this->assign('reply_list',$list);//渲染到前端页面
         $this->assign('pageType','index');
         $this->Display();//显示对应html文件
     }
@@ -29,7 +46,9 @@ class IndexController extends Controller
         //数据库查询用户信息
         $userInfo = M('ucenter_member')->find($this->uid);
         $userInfo['iIsHeadman'] = $userInfo['iIsHeadman']>0?'是':'否';
-        $userInfo['userType'] = $userInfo['iType']>0?'老师':'学生';
+        $userInfo['userType'] = $userInfo['iType'] == 2?'管理员':($userInfo['iType'] == 1?'老师':'学生');
+        $userInfo['type_info'] = $userInfo['iType'] == 1 ? '老师':($userInfo['iType'] == 2?'':'学生');
+        $userInfo['username_show'] = $userInfo['iType'] == 1 ? mb_substr($userInfo['realname'],0,1):$userInfo['realname'];
         $this->assign('userInfo',$userInfo);
         $this->assign('pageType','personInfo');
         $this->Display();
@@ -40,9 +59,20 @@ class IndexController extends Controller
         $data = [];
         $data['sLike'] = I('likes');
         $data['sSkill'] = I('skills');
-
+        $data['realname'] = I('username');
+        if(!empty(I('password'))){
+            $password = md5(sha1(I('password')).C('DATA_AUTH_KEY'));
+            $data['password'] = $password;
+        }
         $result = M('ucenter_member')->where(['id'=>$this->uid])->save($data);
-        echo '<script>alert("保存成功");window.location.href="personInfo.html";</script>';exit;
+        if(!empty(I('password'))){
+            session('user_auth', null);
+            session('user_auth_sign', null);
+            // $this->redirect('Home/Member/login');
+            echo '<script>alert("密码已修改，请重新登录！");window.location.href="Home/Member/login";</script>';exit;
+        }else{
+            echo '<script>alert("保存成功");window.location.href="personInfo.html";</script>';exit;
+        }
         // $this->ajaxReturn(['status'=>1,'message'=>'保存成功！']);
     }
     
@@ -61,7 +91,6 @@ class IndexController extends Controller
         $data = [];
         $data['sTitle'] = $post['title'];
         $data['sContent'] = $post['describe'];
-        $data['sTarget'] = $post['study_target'];
         $data['iAddTime'] = time();
         $res = M('question_list')->add($data);
         if($res){
@@ -349,5 +378,139 @@ class IndexController extends Controller
         }else{
             $this->ajaxReturn(['status'=>0,'msg'=>'保存失败！']);
         }
+    }
+
+    //学生达成评价
+    public function studentReachApprise(){
+        $userInfo = session('user_auth');
+        if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
+            $this->error("无权限！");
+        }
+        $this->assign('pageType','studentList');
+        $this->Display();
+    }
+
+    public function contactTeacher(){
+        $list = M('ucenter_member')->where(['iType'=>1])->select();
+        $this->assign('teacher_list',$list);
+        $this->assign('pageType','contactTeacher');
+        $this->Display();
+    }
+
+    public function saveMessage(){
+        $data = [];
+        $data['iTeacherId'] = I('teacher');
+        $data['sMessage'] = I('message');
+        $data['uid'] = $this->uid;
+        $data['iAddTime'] = time();
+
+        $res = M('student_msgs')->add($data);
+        if($res){
+            $this->success('提交成功！');
+        }
+    }
+
+    public function sharinglist(){
+        $list = M('share_list a')
+        ->field('a.*,um.username,f.sPath,f.sOriName')
+        ->join('ucenter_member um ON a.uid = um.id','LEFT')
+        ->join('file f ON a.iFileId = f.id','LEFT')
+        ->order('a.iAddTime DESC')
+        ->select();
+
+        foreach($list as &$l){
+            $l['date'] = date("Y-m-d H:i",$l['iAddTime']);
+        }
+        $this->assign('share_list',$list);
+        $this->Display();
+    }
+
+    public function sharePublish(){
+        $this->Display();
+    }
+
+    public function shareDetail($id){
+        $list = M('share_list s')
+        ->join('file f ON s.iFileId = f.id','LEFT')
+        ->join('ucenter_member um ON s.uid = um.id','LEFT')
+        ->where(['s.id'=>$id])
+        ->find();
+        $list['date'] = date("Y-m-d H:i",$list['iAddTime']);
+        //加载该问题所有回复
+        $answerList = M('share_answer a')
+        ->field('a.*,um.username')
+        ->join('ucenter_member um ON a.uid = um.id','LEFT')
+        ->where(['a.pid'=>$id])
+        ->order('a.iAddTime DESC')
+        ->select();
+        foreach($answerList as &$answer){
+            $answer['date'] = date("Y-m-d H:i",$answer['iAddTime']);
+        }
+        $this->assign('answerList',$answerList);
+        $this->assign('shareDetail',$list);
+        // $this->assign('pageType','questionList');
+        $this->Display();
+    }
+
+    public function shareSave(){
+        $data = [];
+        $config = C('DOWNLOAD_UPLOAD');
+        $config['maxSize'] = 10*1024*1024;
+        $upload = new \Think\Upload($config);// 实例化上传类
+        // 上传单个文件
+        if(!empty($_FILES['file'])){
+            $info   =   $upload->uploadOne($_FILES['file']);
+            $oriFileName = $_FILES['file']['name'];
+        }
+        if(!empty($info)){
+            $fileData = [];
+            $fileData['sOriName'] = $oriFileName;
+            $savePath = $config['rootPath'].$info['savepath'];
+            $fileData['sPath'] = $savePath.$info['savename'];
+            $fileId = M('file')->add($fileData);
+            $data['iFileId'] = $fileId;
+        }
+        $data['sTitle'] = I('title');
+        $data['sContent'] = I('content');
+        $data['uid'] = $this->uid;
+        $data['iAddTime'] = time();
+        $res = M('share_list')->add($data);
+        if($res){
+            $this->ajaxReturn(['status'=>1,'msg'=>'发布成功']);
+        }else{
+            $this->ajaxReturn(['status'=>0,'msg'=>'发布失败']);
+        }
+    }
+
+    public function saveShareReply(){
+        $data['sReply'] = I('reply_text');
+        $data['uid'] = $this->uid;
+        $data['pid'] = I('shareid');
+        $data['iAddTime'] = time();
+        $res = M('share_answer')->add($data);
+        if($res){
+            $this->ajaxReturn(['status'=>1,'msg'=>'回复成功']);
+        }else{
+            $this->ajaxReturn(['status'=>0,'msg'=>'回复失败']);
+        }
+    }
+
+    public function sharingStatistics(){
+        $userInfo = session('user_auth');
+        if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
+            $this->error("无权限！");
+        }
+        $studentList = M('ucenter_member um')
+        ->field('um.*,COUNT(a.id) AS count')
+        ->join('share_list as a ON um.id=a.uid','LEFT')
+        ->where(['um.iType'=>0])
+        ->group('um.id')
+        ->select();
+        foreach($studentList as &$student){
+            $student['iIsHeadman'] = $student['iIsHeadman']>0?'是':'否';
+        }
+        $this->assign('studentList',$studentList);
+        $this->assign('pageType','studentList');
+        $this->Display();
     }
 }
