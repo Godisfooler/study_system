@@ -41,12 +41,12 @@ th {
 				  </tr>
 				</thead>
 				<tbody>
-					<volist name="arguelist" id="list">
+					<volist name="arguelist" id="list" key="k">
 						<tr>
-							<td>{$list.sTitle}</td>
-							<td>{$list.date}</td>
+							<td>{$k}</td>
+							<td>{$list.realname}</td>
 							<td>{$list.iSupportCount}</td>
-							<td>{$list.iAgainstCount}</td>
+							<td>{$list.iVoteCount}</td>
 							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->
 							<td style="text-decoration: underline;cursor:pointer;"><a href="">查看回答</a></td>
 						  </tr>

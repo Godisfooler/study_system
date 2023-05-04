@@ -183,30 +183,33 @@ class ArgueController extends Controller
         $this->Display();
     }
 
-    public function argueStatisticsDetail($id){
+    public function argueStatisticsDetail($id=2){
         $userInfo = session('user_auth');
         if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
             $this->error("无权限！");
         }
         $list = M('argue_answer a')
-        ->field('a.*,um.realname,c.*')
+        ->field('a.*,um.realname')
         ->join('ucenter_member as um ON um.id=a.uid','LEFT')
-        ->join('argue_count as c ON c.uid=a.uid','LEFT')
+        // ->join('argue_count as c ON c.uid=a.uid','LEFT')
         ->where(['a.pid'=>$id])
-        ->group('a.uid')
-        ->order('a.iAddTime DESC')
+        // ->group('a.uid')
+        ->order('a.iVoteCount DESC')
         ->select();
-        var_dump($list);exit;
+        $sortArr = [];
         foreach($list as &$l){
-            $l['date'] = date("Y-m-d H:i",$l['iAddTime']);
-         }
-        // $studentList = M('ucenter_member um')
-        // ->field('um.*,COUNT(a.id) AS count')
-        // ->join('share_list as a ON um.id=a.uid','LEFT')
-        // ->where(['um.iType'=>0])
-        // ->group('um.id')
-        // ->select();
-        $this->assign('arguelist',$list);
+            $sortArr[$l['iType']][$l['uid']]['iType'] = $l['iType'] > 0?'正方':'反方';
+            $sortArr[$l['iType']][$l['uid']]['iVoteCount'] += $l['iVoteCount'];
+            $sortArr[$l['iType']][$l['uid']]['realname'] = $l['realname'];
+            $sortArr[$l['iType']][$l['uid']]['uid'] = $l['uid'];
+            // $l['date'] = date("Y-m-d H:i",$l['iAddTime']);
+        }
+        $type0 = empty($sortArr[0])?[]:$sortArr[0];
+        $type1 = empty($sortArr[1])?[]:$sortArr[1];
+        $sortArr = array_merge($type0,$type1);
+        array_multisort(array_column($sortArr,'iVoteCount'), SORT_DESC, $sortArr);
+        var_dump($sortArr);exit;
+        $this->assign('arguelist',$sortArr);
         $this->assign('pageType','studentList');
         $this->Display();
     }
@@ -561,15 +564,16 @@ class ArgueController extends Controller
 
     public function sharingStatistics(){
         $userInfo = session('user_auth');
-        if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
-            $this->error("无权限！");
-        }
+        // if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
+        //     $this->error("无权限！");
+        // }
         $studentList = M('ucenter_member um')
         ->field('um.*,COUNT(a.id) AS count')
         ->join('share_list as a ON um.id=a.uid','LEFT')
         ->where(['um.iType'=>0])
         ->group('um.id')
         ->select();
+        var_dump($studentList);exit;
         foreach($studentList as &$student){
             $student['iIsHeadman'] = $student['iIsHeadman']>0?'是':'否';
         }
