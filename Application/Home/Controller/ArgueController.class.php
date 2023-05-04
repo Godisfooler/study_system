@@ -133,9 +133,7 @@ class ArgueController extends Controller
     public function agreeCount(){
         $data = [];
         $id = I('id');
-        $data['iSupportCount'] = I('support_count');
-        $data['iAgainstCount'] = I('against_count');
-        $res = M('argue_list')->where(['id'=>$id])->save($data);
+        $res = M('argue_answer')->where(['id'=>$id])->setInc('iVoteCount',1);
         if($res){
             $this->ajaxReturn(['status'=>1,'msg'=>'请求成功！']);
         }
@@ -163,27 +161,30 @@ class ArgueController extends Controller
             $this->error("无权限！");
         }
         $list = M('argue_list a')
-        // ->field('a.*,um.username as teacher')
-        // ->join('ucenter_member as um ON um.id=a.uid','LEFT')
-        // ->join('argue_answer as b ON b.pid=a.id','LEFT')
-        ->group('a.id')
         ->order('a.iAddTime DESC')
         ->select();
         foreach($list as &$l){
+            $supportCount = $this->getAgreeCount($l['id'],1);
+            $againstCount = $this->getAgreeCount($l['id'],0);
+            $l['supportCount'] = $supportCount;
+            $l['againstCount'] = $againstCount;
             $l['date'] = date("Y-m-d H:i",$l['iAddTime']);
          }
-        // $studentList = M('ucenter_member um')
-        // ->field('um.*,COUNT(a.id) AS count')
-        // ->join('share_list as a ON um.id=a.uid','LEFT')
-        // ->where(['um.iType'=>0])
-        // ->group('um.id')
-        // ->select();
         $this->assign('arguelist',$list);
         $this->assign('pageType','studentList');
         $this->Display();
     }
 
-    public function argueStatisticsDetail($id=2){
+    public function getAgreeCount($pid,$iType){
+        $list = M('argue_answer')->where(['pid'=>$pid,'iType'=>$iType])->select();
+        $count = 0;
+        foreach($list as $l){
+            $count += $l['iVoteCount'];
+        }
+        return $count;
+    }
+
+    public function argueStatisticsDetail($id){
         $userInfo = session('user_auth');
         if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
             $this->error("无权限！");
@@ -198,20 +199,29 @@ class ArgueController extends Controller
         ->select();
         $sortArr = [];
         foreach($list as &$l){
-            $sortArr[$l['iType']][$l['uid']]['iType'] = $l['iType'] > 0?'正方':'反方';
+            $sortArr[$l['iType']][$l['uid']]['iType'] = $l['iType'];
+            $sortArr[$l['iType']][$l['uid']]['type_text'] = $l['iType'] > 0?'正方':'反方';
             $sortArr[$l['iType']][$l['uid']]['iVoteCount'] += $l['iVoteCount'];
             $sortArr[$l['iType']][$l['uid']]['realname'] = $l['realname'];
             $sortArr[$l['iType']][$l['uid']]['uid'] = $l['uid'];
+            $sortArr[$l['iType']][$l['uid']]['pid'] = $l['pid'];
             // $l['date'] = date("Y-m-d H:i",$l['iAddTime']);
         }
         $type0 = empty($sortArr[0])?[]:$sortArr[0];
         $type1 = empty($sortArr[1])?[]:$sortArr[1];
         $sortArr = array_merge($type0,$type1);
         array_multisort(array_column($sortArr,'iVoteCount'), SORT_DESC, $sortArr);
-        var_dump($sortArr);exit;
         $this->assign('arguelist',$sortArr);
         $this->assign('pageType','studentList');
         $this->Display();
+    }
+
+    public function detailAnswer(){
+        $pid = I('pid');
+        $uid = I('uid');
+        $type = I('type');
+        $list = M('argue_answer')->where(['pid'=>$pid,'uid'=>$uid,'iType'=>$type])->order('iAddTime DESC')->select();
+        $this->ajaxReturn(['status'=>1,'data'=>$list]);
     }
 
      //学生列表，仅老师账号可见

@@ -40,7 +40,7 @@ h1 {
 	padding: 10px;
 	background-color: #f2f2f2;
 	border: 1px solid #ddd;
-	height: 110px;
+	max-height: 170px;
 }
 .comment .meta {
 	font-size: 12px;
@@ -48,6 +48,10 @@ h1 {
 	color: #999;
 }
 .comment .content {
+	font-size: 16px;
+	line-height: 1;
+}
+.comment .content p{
 	font-size: 16px;
 	line-height: 1;
 	margin-bottom: 10px;
@@ -238,7 +242,6 @@ header p{
 												  <h1>正方观点</h1>
 												  <p>{$questionDetail.sSupport}</p>
 												  <div class="buttons">
-													<button id="pro-button" onclick="vote('pro')">点赞 (<span id="pro-votes">{$questionDetail.iSupportCount}</span>)</button>
 													<button id="pro-comment-button" onclick="showPopup(1)">评论</button>
 												  </div>
 												  <div class="comments" id="pro-comments">
@@ -250,7 +253,9 @@ header p{
 																	<p>评论者：{$answer.realname}  &nbsp;&nbsp;&nbsp;&nbsp;发表于：{$answer.date}</p>
 																</div>
 																<div class="content">
-																	<p>{$answer.sReply}</p>
+																	<p>{$answer.sReply}
+																	</p>
+																	<button id="pro-button" onclick="vote('pro','{$answer.id}')"><i class="icon fa-thumbs-up"></i> (<span id="pro-votes-{$answer.id}">{$answer.iVoteCount}</span>)</button>
 																</div>
 															</div>
 														</volist>
@@ -262,7 +267,6 @@ header p{
 												  <h1>反方观点</h1>
 												  <p>{$questionDetail.sAgainst}</p>
 												  <div class="buttons">
-													<button id="con-button" onclick="vote('con')">点赞 (<span id="con-votes">{$questionDetail.iAgainstCount}</span>)</button>
 													<button id="con-comment-button" onclick="showPopup(0)">评论</button>
 												  </div>
 												  <div class="comments" id="con-comments">
@@ -275,6 +279,7 @@ header p{
 																</div>
 																<div class="content">
 																	<p>{$answer.sReply}</p>
+																<button id="pro-button" onclick="vote('con','{$answer.id}')"><i class="icon fa-thumbs-up"></i> (<span id="pro-votes-{$answer.id}">{$answer.iVoteCount}</span>)</button>
 																</div>
 															</div>
 														</volist>
@@ -330,40 +335,17 @@ header p{
 					}
 				});
 		}
-			// 初始化点赞数和评论数
-			let proVotes = "{$questionDetail.iSupportCount}";
-			let ori_proVotes = "{$questionDetail.iSupportCount}";
-			let conVotes = "{$questionDetail.iAgainstCount}";
-			let ori_conVotes = "{$questionDetail.iAgainstCount}";
-			let proComments = [];
-			let conComments = [];
-			// 更新点赞数和评论数的显示
-			function updateView(id) {
-				if (id === 'pro') {
-					document.getElementById('pro-votes').textContent = proVotes;
-					let proCommentDiv = document.getElementById('pro-comments');
-					proCommentDiv.innerHTML = '<h3>评论</h3>' + proComments.join('');
-				} else {
-					document.getElementById('con-votes').textContent = conVotes;
-					let conCommentDiv = document.getElementById('con-comments');
-					conCommentDiv.innerHTML = '<h3>评论</h3>' + conComments.join('');
-				}
-			}
 			 // 点赞函数
-			 function vote(id) {
-			if (id === 'pro') {
+		function vote(type,id) {
+			if (type === 'pro') {
+				var proVotes = document.getElementById('pro-votes-'+id).textContent;
 				proVotes++;
-				document.getElementById('pro-button').innerHTML = `点赞 (<span id="pro-votes">${proVotes}</span>)`;
-				document.getElementById('pro-button').disabled = true;
-				if(conVotes > 0 && conVotes > ori_conVotes){
-					conVotes--;
-				}
-				document.getElementById('con-button').innerHTML = `点赞 (<span id="con-votes">${conVotes}</span>)`;
-				document.getElementById('con-button').disabled = false;
+				document.getElementById('pro-votes-'+id).textContent = proVotes;
+				document.getElementById('pro-votes-'+id).parentNode.disabled = true;
 				$.ajax({
 					url: '/Home/Argue/agreeCount', // 后端处理数据的URL
 					type: 'POST',
-					data: {'id':argueid,'support_count':proVotes,'against_count':conVotes},
+					data: {'id':id},
 					success: function(response) {
 						// 处理成功响应
 					},
@@ -371,20 +353,15 @@ header p{
 						// 处理错误响应
 					}
 				});
-				// updateView('pro');
 			} else {
+				var conVotes = document.getElementById('pro-votes-'+id).textContent;
 				conVotes++;
-				document.getElementById('con-button').innerHTML = `点赞 (<span id="con-votes">${conVotes}</span>)`;
-				document.getElementById('con-button').disabled = true;
-				if(proVotes > 0 && proVotes > ori_proVotes){
-					proVotes--;
-				}
-				document.getElementById('pro-button').innerHTML = `点赞 (<span id="pro-votes">${proVotes}</span>)`;;
-				document.getElementById('pro-button').disabled = false;
+				document.getElementById('pro-votes-'+id).textContent = conVotes;
+				document.getElementById('pro-votes-'+id).parentNode.disabled = true;
 				$.ajax({
 					url: '/Home/Argue/agreeCount', // 后端处理数据的URL
 					type: 'POST',
-					data: {'id':argueid,'support_count':proVotes,'against_count':conVotes},
+					data: {'id':id,},
 					success: function(response) {
 						// 处理成功响应
 					},
@@ -392,77 +369,9 @@ header p{
 						// 处理错误响应
 					}
 				});
-				// updateView('con');
 			}
-			}
-			
-			// 添加评论函数
-			function comment(id) {
-				let commentText = prompt('请输入评论');
-				if (commentText) {
-				if (id === 'pro') {
-					proComments.push(`<p>${commentText}</p>`);
-					updateView('pro');
-				} else {
-					conComments.push(`<p>${commentText}</p>`);
-					updateView('con');
-				}
-				}
-			}
-			function submitForm(obj) {
-			  var answerId = $(obj).attr('answerId');
-			  var pros = $(obj).parent().find("#pros").val();
-			  var cons = $(obj).parent().find("#cons").val();
-			  var suggestions = $(obj).parent().find("#suggestions").val();
-			  if(pros == '' && cons =='' && suggestions==''){
-			  }else{
-				$.ajax({
-					url: '/Home/Index/answerAppraise', // 后端处理数据的URL
-					type: 'POST',
-					data: {'answerId':answerId,'pros':pros,'cons':cons,'suggestions':suggestions},
-					success: function(response) {
-						// 处理成功响应
-					},
-					error: function(response) {
-						// 处理错误响应
-					}
-				});
-			  }
-			}
-
-		var upfiles = {};
-		function getFileSize(fileObj){
-			upfiles = fileObj.files;
-			console.log(upfiles);
-    	}
-		function submitReply(){
-			var questionId = "{$_GET['questionId']}";
-			var reply_text = $("#reply").val();
-			var formData = new FormData();
-			formData.append('file',upfiles[0]);
-			formData.append('questionId',questionId);
-			formData.append('reply_text',reply_text);
-			$.ajax({
-				url: '/Home/Index/saveReply', // 后端处理数据的URL
-				type: 'POST',
-				data:formData,
-				dataType:'JSON',
-				processData:false,
-				contentType:false,
-				success: function(response) {
-					if(response.status == 1){
-						$('.reply_text').html(' '+response.msg);
-						window.location.reload();
-					}else{
-						var tempHtml = '<span style="color:red">'+response.msg+'</span>';
-						$('.reply_text').html(tempHtml);
-					}
-				},
-				error: function(response) {
-					// 处理错误响应
-				}
-			});
 		}
+		
 </script>
 	</body>
 </html>

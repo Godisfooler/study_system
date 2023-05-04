@@ -151,9 +151,6 @@ header p{
 											<header>
 												<h2>问题详情</h2>
 												<p calss="title">{$questionDetail.sTitle}</p>
-												<if condition="$userInfo.iType GT 0 || $userInfo.iIsAdmin GT 0">
-													<span class="target">学习目标：{$questionDetail.sTarget}</span>
-												</if>
 												<ul class="meta">
 													<li class="icon fa-clock">发布时间：{$questionDetail.date}</li>
 													<li class="icon fa-comments">回答数：{$questionDetail.count}</li>
@@ -194,6 +191,8 @@ header p{
 																			<p>{$appriselist.sShortComing}</p>
 																			<label for="suggestions">指导建议：</label>
 																			<p>{$appriselist.sSuggestions}</p>
+																			<label for="suggestions">评分：</label>
+																			<p>{$appriselist.iScore}</p>
 																		</div>
 																	</volist>
 																</div>
@@ -205,6 +204,8 @@ header p{
 																	<input type="text" id="cons" name="cons" value=""><br>
 																	<label for="suggestions">指导建议：</label><br>
 																	<input type="text" id="suggestions" name="suggestions" value=""><br>
+																	<label for="score">评分：</label><br>
+																	<input type="number" id="score" max="10" min="1" name="score" value=""><br>
 																	<button onclick="submitForm(this)" answerId="{$answer.id}">提交</button>
 																</div>
 																<div id="dianping_msg"></div>
@@ -259,12 +260,13 @@ header p{
 			  var pros = $(obj).parent().find("#pros").val();
 			  var cons = $(obj).parent().find("#cons").val();
 			  var suggestions = $(obj).parent().find("#suggestions").val();
+			  var score = $(obj).parent().find("#score").val();
 			  if(pros == '' && cons =='' && suggestions==''){
 			  }else{
 				$.ajax({
 					url: '/Home/Index/answerAppraise', // 后端处理数据的URL
 					type: 'POST',
-					data: {'answerId':answerId,'pros':pros,'cons':cons,'suggestions':suggestions},
+					data: {'answerId':answerId,'pros':pros,'cons':cons,'suggestions':suggestions,'score':score},
 					success: function(response) {
 						// 处理成功响应
 						if(response.status == 1){
@@ -278,6 +280,8 @@ header p{
 												'<p>'+cons+'</p>'+
 												'<label for="suggestions">指导建议：</label>'+
 												'<p>'+suggestions+'</p>'+
+												'<label for="score">评分：</label>'+
+												'<p>'+score+'</p>'+
 											'</div>';
 							$(obj).parent().parent().find('#dianping_list').append(tempHtml);
 							$(obj).parent().find("#pros").val('');

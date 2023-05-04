@@ -24,12 +24,67 @@ th {
 .container{
 	width: 40%;
 }
+.popup {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
+.popup-content {
+	background-color: white;
+	padding: 40px;
+	border-radius: 5px;
+	width: 80%;
+	max-width: 600px;
+	height: 70%;
+	max-height: 500px;
+}
+
+.popup p{
+	display: block;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	padding-left: 10px;
+	width: 100%;
+	border: 1px solid #ddd;
+}
+.close-button {
+	float:right;
+	position: relative;
+	top: -30px;
+	right: -20px;
+	font-size: 2.2em;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	color: #333;
+}
+.comment_div{
+	max-width: 600px;
+	height: 100%;
+	max-height: 500px;
+	overflow: auto;
+	margin-bottom: 10px;
+}
+.back_href{
+	text-decoration: underline;
+}
+.back_href:hover{
+	text-decoration: underline;
+}
 </style>	
 </head>
 <body class="is-preload">
 	<section id="main">
 		<div class="container">
-			<h3>辩论情况统计：</h3>
+			<h3><a class="back_href" href="{:U('Home/Argue/argueStatistics')}">>返回辩论情况统计</a></h3>
+			<h3>辩论排行：</h3>
 			<table>
 				<thead>
 				  <tr>
@@ -45,15 +100,52 @@ th {
 						<tr>
 							<td>{$k}</td>
 							<td>{$list.realname}</td>
-							<td>{$list.iSupportCount}</td>
+							<td>{$list.type_text}</td>
 							<td>{$list.iVoteCount}</td>
 							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->
-							<td style="text-decoration: underline;cursor:pointer;"><a href="">查看回答</a></td>
+							<td style="text-decoration: underline;cursor:pointer;" onclick="showPopup('{$list.pid}','{$list.uid}','{$list.iType}')">查看回答</td>
 						  </tr>
 					</volist>
 				</tbody>
 			  </table>
 		</div>
+		<div id="popup" class="popup" style="display:none">
+			<div class="popup-content">
+				<span>所有回答：</span>
+				<span class="close-button" onclick="closePopup()">×</span>
+				<div class="comment_div">
+
+				</div>
+			</div>
+		</div>
 	</section>
 </body>
+<script>
+	function closePopup() {
+		document.getElementById("popup").style.display = "none";
+	}
+	function showPopup(pid,uid,type) {
+		$.ajax({
+			url: '/Home/Argue/detailAnswer', // 后端处理数据的URL
+			type: 'POST',
+			data:{'pid':pid,'uid':uid,'type':type},
+			success: function(response) {
+				if(response.status == 1){
+					document.getElementById("popup").style.display = "flex";
+					var commentlist = '';
+					response.data.forEach(function(v){
+						commentlist += '<p>'+v.sReply+'</p><i class="icon fa-thumbs-up"></i><span>'+v.iVoteCount+'</span>';
+					});
+					$(".comment_div").html(commentlist);
+					// document.getElementById("popup").style.display = "none";
+				}else{
+				}
+			},
+			error: function(response) {
+				// 处理错误响应
+			}
+		});
+	}
+
+</script>
 </html>

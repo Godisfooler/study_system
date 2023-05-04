@@ -177,6 +177,12 @@ class IndexController extends Controller
         $data['sMerit'] = $post['pros'];
         $data['sShortComing'] = $post['cons'];
         $data['sSuggestions'] = $post['suggestions'];
+        if($post['score'] > 10){
+            $score = 10;
+        }elseif($post['score'] < 1){
+            $score = 1;
+        }
+        $data['iScore'] = $score;
         $data['sTrCode'] = md5($data['uid'].$data['iAnswerId'].$data['sMerit'].$data['sShortComing'].$post['suggestions']);
         if(M('appraise_list')->where(['sTrCode'=>$data['sTrCode']])->find()){
             $this->ajaxReturn(['status'=>0,'msg'=>'请勿提交重复内容！']);

@@ -22,7 +22,7 @@ th {
   background-color: #f2f2f2;
 }
 .container{
-	width: 40%;
+	max-width: 50%;
 }
 </style>	
 </head>
@@ -45,8 +45,8 @@ th {
 						<tr>
 							<td>{$list.sTitle}</td>
 							<td>{$list.date}</td>
-							<td>{$list.iSupportCount}</td>
-							<td>{$list.iAgainstCount}</td>
+							<td>{$list.supportCount}</td>
+							<td>{$list.againstCount}</td>
 							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->
 							<td style="text-decoration: underline;cursor:pointer;"><a href="{:U('Home/Argue/argueStatisticsDetail')}?id={$list.id}">查看详情</a></td>
 						  </tr>
