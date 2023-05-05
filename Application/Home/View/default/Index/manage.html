@@ -1,100 +1,73 @@
+<!DOCTYPE HTML>
 <html>
-	<head>
-    <include file="./Application/Home/View/default/Public/nav.html" />
-		<title>用户管理</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="__CSS__/main.css" />
-<style>
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
+<head>
+	<include file="./Application/Home/View/default/Public/nav.html" />
+	<title>学习系统</title>
+ <style>
+  .button {
+   width: 240px;
+   height: 70px;
+   background-color: #64cc56;
+   border: none;
+   color: white;
+   font-size: 18px;
+   cursor: pointer;
+   border-radius: 6px;
+   margin: 15px;
+   outline: none;
+   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
+   transition: all 0.2s ease-in-out;
+  }
 
-th,
-td {
-  text-align: center;
-  padding: 10px;
-  border: 1px solid #ddd;
-}
+  .button:hover {
+   background-color: #2980b9;
+   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.4);
+   transform: translateY(-2px);
+  }
 
-th {
-  background-color: #f2f2f2;
-}
-.popup {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.5);
-	display: none;
-	align-items: center;
-	justify-content: center;
-}
-
-.popup-content {
-	background-color: white;
-	padding: 40px;
-	border-radius: 5px;
-	width: 80%;
-	max-width: 400px;
-	height: 60%;
-	max-height: 240px;
-	overflow: auto;
-}
-
-.popup input {
-	display: block;
-	margin-bottom: 20px;
-	margin-top: 20px;
-	width: 100%;
-}
-.saveBtn{
-	width: 30%;
-	height: 40px;
-	padding: 10px;
-}
-.close-button {
-	float:right;
-	position: relative;
-	top: -30px;
-	right: -20px;
-	font-size: 2.2em;
-	background-color: transparent;
-	border: none;
-	cursor: pointer;
-	color: #333;
-}
-</style>	
+  .button:active {
+   background-color: #217dbb;
+   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+   transform: translateY(1px);
+  }
+  .btndiv{
+	text-align: center;
+	margin-top: 65px;
+  }
+  .btndiv a{
+    color: #fff;
+    text-decoration: none;
+  }
+  .reply{
+    margin: 50px;
+    padding: 20px;
+    width: 50%;
+  }
+  .reply p{
+    margin: 10px;
+    width: 80%;
+  }
+  .reply_txt{
+    padding: 20px;
+    width: 80%;
+    border: 1px solid #ddd;
+    color:#6b7770;
+    font-size: 14px;
+    background-color: #fff;
+  }
+  .msg{
+	  border-bottom: 1px solid #ddd;
+  }
+ </style>
 </head>
-<body class="is-preload">
-	<section id="main">
-		<div class="container">
-			<h3>用户列表：</h3>
-			<table>
-				<thead>
-				  <tr>
-					<th>用户名</th>
-					<th>姓名</th>
-					<th>用户类型</th>
-					<th>注册时间</th>
-					<th>操作</th>
-				  </tr>
-				</thead>
-				<tbody>
-					<volist name="userList" id="user">
-						<tr>
-							<td>{$user.username}</td>
-							<td>{$user.realname}</td>
-							<td>{$user.userType}</td>
-							<td>{$user.regist_date}</td>
-							<td style="text-decoration: underline;cursor:pointer;"><a href="{:U('Home/Index/editUser')}?uid={$user.id}">编辑</a></td>
-						  </tr>
-					</volist>
-				</tbody>
-			  </table>
-		</div>
-	</section>
+<body>
+  <section id="main">
+  <div class="btndiv">
+      <a href="{:U('Home/Index/manageUser')}"><button class="button">用户管理</button></a>
+      <a href="{:U('Home/Index/manageQuestion')}"><button class="button">问题管理</button></a>
+      <a href="{:U('Home/Index/manageArgue')}"><button class="button">辩论管理</button></a>
+    <a href="{:U('Home/Index/groupManage')}"><button class="button">分组管理</button></a>
+  </div>
+  </section>
 </body>
 </html>

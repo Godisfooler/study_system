@@ -214,6 +214,12 @@ header p{
 	cursor: pointer;
 	color: #333;
 }
+.selected {
+	border-color: red;
+}
+.btnhide{
+	display: none;
+}
 </style>	
 </head>
 <body class="is-preload">
@@ -242,7 +248,8 @@ header p{
 												  <h1>正方观点</h1>
 												  <p>{$questionDetail.sSupport}</p>
 												  <div class="buttons">
-													<button id="pro-comment-button" onclick="showPopup(1)">评论</button>
+													<button id="pro-comment-button" class="choosebtn" onclick="selectBox('pro-view')">选择</button>
+													<button id="pro-comment-button" class="comment-btn btnhide" onclick="showPopup(1)">评论</button>
 												  </div>
 												  <div class="comments" id="pro-comments">
 													<h3>评论列表</h3>
@@ -267,7 +274,8 @@ header p{
 												  <h1>反方观点</h1>
 												  <p>{$questionDetail.sAgainst}</p>
 												  <div class="buttons">
-													<button id="con-comment-button" onclick="showPopup(0)">评论</button>
+													<button id="con-comment-button" class="choosebtn" onclick="selectBox('con-view')">选择</button>
+													<button id="con-comment-button" class="comment-btn btnhide" onclick="showPopup(0)">评论</button>
 												  </div>
 												  <div class="comments" id="con-comments">
 													<h3>评论列表</h3>
@@ -306,6 +314,44 @@ header p{
 		</div>
 
 		<script>
+			const userchoose = "{$userchoose}";
+			if(userchoose != ''){
+				if(userchoose > 0){
+					selectBox('pro-view');
+				}else{
+					selectBox('con-view');
+				}
+			}
+			function selectBox(id) {
+				// 移除之前选择的框的标记
+				var selectedBox = document.getElementsByClassName("selected");
+				if (selectedBox.length > 0) {
+					selectedBox[0].classList.remove("selected");
+				}
+
+				// 标记当前选择的框
+				var box = document.getElementById(id);
+				box.classList.add("selected");
+				
+				if(userchoose == ''){
+					$("#"+id).find('.comment-btn').removeClass('btnhide');
+				}
+				$("#"+id).find('.choosebtn').html('已选择');
+
+				if(id == 'pro-view'){
+					if(userchoose != ''){
+						$("#con-view").find('.choosebtn').attr('disabled',true);
+					}
+					$('#con-view').find('.comment-btn').addClass('btnhide');
+					$("#con-view").find('.choosebtn').html('选择');
+				}else{
+					if(userchoose != ''){
+						$("#pro-view").find('.choosebtn').attr('disabled',true);
+					}
+					$('#pro-view').find('.comment-btn').addClass('btnhide');
+					$("#pro-view").find('.choosebtn').html('选择');
+				}
+			}
 			let argueid = "{$questionDetail.id}";
 
 			function closePopup() {

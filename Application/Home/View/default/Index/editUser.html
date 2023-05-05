@@ -70,6 +70,10 @@
                     <textarea class="form_control" id="inputSkill" placeholder="" name="skills"><if condition="$userDetail.iType EQ 0">{$userDetail.sSkill}</if></textarea>
                 </div>
               </div>
+              <div class="form-group">
+                <label for="password">修改密码</label>
+                <input type="password" class="form-control" value="" placeholder="请输入新密码" name="password" id="password">
+              </div>
             </div>
           <button onclick="saveUser()" disabled id="save_btn" class="btn btn-primary" style="margin-top:10px">保存</button>
         </form>
@@ -83,7 +87,7 @@
     window.param_warning = 'userType='+window.userType;
     $(".student_div").hide();
   }else{
-    window.param_warning = 'realname='+"{$userDetail.realname}"+'&userType='+"{$userDetail.iType}"+'&iGroupId='+"{$userDetail.iGroupId}"+'&iIsHeadman='+"{$userDetail.iIsHeadman}"+'&likes='+"{$userDetail.sLike}"+'&skill='+"{$userDetail.sSkill}";
+    window.param_warning = 'realname='+"{$userDetail.realname}"+'&userType='+"{$userDetail.iType}"+'&iGroupId='+"{$userDetail.iGroupId}"+'&iIsHeadman='+"{$userDetail.iIsHeadman}"+'&likes='+"{$userDetail.sLike}"+'&skill='+"{$userDetail.sSkill}"+'&password=';
     $("#position_select").val("{$userDetail.iIsHeadman}");
     $("#group_select").val("{$userDetail.iGroupId}");
   }
@@ -111,6 +115,7 @@
       param += '&likes='+$("#inputLikes").val();
       param += '&skill='+$("#inputSkill").val();
     }
+    param += '&password='+$("#password").val();
     return param;
   }
 

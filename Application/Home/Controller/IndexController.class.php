@@ -163,7 +163,16 @@ class IndexController extends Controller
             $answer['date'] = date("Y-m-d H:i",$answer['iAddTime']);
             $answer['appriseList'] = $this->getAppriseList($answer['id']);
         }
+        $result = M('appraise_list a')
+        ->join('answer_list w ON w.id = a.iAnswerId','LEFT')
+        ->where(['w.pid'=>$questionId,'a.uid'=>$this->uid])
+        ->find();
+        $hasApprised = false;
+        if($result){
+            $hasApprised = true;
+        }
         $this->assign('questionDetail',$list);
+        $this->assign('hasApprised',$hasApprised);
         $this->assign('answerList',$answerList);
         $this->assign('pageType','questionList');
         $this->Display();
@@ -180,9 +189,10 @@ class IndexController extends Controller
         $data['sMerit'] = $post['pros'];
         $data['sShortComing'] = $post['cons'];
         $data['sSuggestions'] = $post['suggestions'];
-        if($post['score'] > 10){
+        $score = $post['score'];
+        if($score > 10){
             $score = 10;
-        }elseif($post['score'] < 1){
+        }elseif($score < 1){
             $score = 1;
         }
         $data['iScore'] = $score;
@@ -196,6 +206,8 @@ class IndexController extends Controller
             $data['date'] = date("Y-m-d H:i",$data['iAddTime']);
             $data['username'] = $this->userInfo['username'];
             $this->ajaxReturn(['status'=>1,'msg'=>'点评成功！','data'=>$data]);
+        }else{
+            $this->ajaxReturn(['status'=>0,'msg'=>'点评失败！','data'=>$data]);
         }
     }
 
@@ -347,6 +359,14 @@ class IndexController extends Controller
 
     //管理员管理页面
     public function manage(){
+        if($this->userInfo['iIsAdmin'] != 1){
+            $this->error('无权限！');
+        }
+        $this->assign('pageType','manage');
+        $this->Display();
+    }
+
+    public function manageUser(){
         if($this->userInfo['iIsAdmin'] != 1){
             $this->error('无权限！');
         }
@@ -561,6 +581,7 @@ class IndexController extends Controller
             $student['group_average'] = is_null($scores[$student['id']][2])?0:$scores[$student['id']][2];
             $student['all_average'] = is_null($scores[$student['id']]['all'])?0:$scores[$student['id']]['all'];
         }
+        array_multisort(array_column($studentList,'all_average'), SORT_DESC, $studentList);
         $this->assign('studentList',$studentList);
         $this->assign('pageType','studentList');
         $this->Display();
@@ -645,4 +666,77 @@ class IndexController extends Controller
         }
     }
 
+    //删除分组
+    public function deleteGroup(){
+        $gid = I('id');
+        if(!empty($gid)){
+            $res = M('group_list')->delete($gid);
+         }
+
+         if($res){
+             $this->ajaxReturn(['status'=>1,'msg'=>'删除成功！']);
+         }
+    }
+
+    //问题管理
+    public function manageQuestion(){
+        //数据库查询问题列表
+        $list = M('question_list q')
+        ->field('q.*,um.realname')
+        ->join('ucenter_member as um ON um.id=q.uid','LEFT')
+        ->group('q.id')
+        ->order('q.iAddTime DESC')
+        ->select();
+        foreach($list as &$l){
+            if(mb_strlen($l['sContent']) > 150){
+                $l['sContent'] = mb_substr($l['sContent'],0,150).'...';
+            }
+            $l['date'] = date("Y-m-d H:i",$l['iAddTime']);
+        }
+        $this->assign('question_list',$list);//渲染到前端页面
+        $this->assign('pageType','manage');
+        $this->Display();
+    }
+
+    //问题删除
+    public function deleteQuestion(){
+        $id = I('id');
+        if(!empty($id)){
+            $res = M('question_list')->delete($id);
+        }
+        if($res){
+            $this->ajaxReturn(['status'=>1,'msg'=>'删除成功！']);
+        }
+    }
+
+    //辩论管理
+    public function manageArgue(){
+        $userInfo = session('user_auth');
+        if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
+            $this->error("无权限！");
+        }
+        $list = M('argue_list a')
+        ->order('a.iAddTime DESC')
+        ->select();
+        foreach($list as &$l){
+            $l['date'] = date("Y-m-d H:i",$l['iAddTime']);
+         }
+        $this->assign('arguelist',$list);
+        $this->assign('pageType','studentList');
+        $this->Display();
+        $this->assign('pageType','manage');
+        $this->Display();
+    }
+
+     //辩论删除
+     public function deleteArgue(){
+        $id = I('id');
+        if(!empty($id)){
+            $res = M('argue_list')->delete($id);
+        }
+
+        if($res){
+            $this->ajaxReturn(['status'=>1,'msg'=>'删除成功！']);
+        }
+    }
 }

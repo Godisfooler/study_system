@@ -1,0 +1,76 @@
+<html>
+	<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+		<title>辩论管理</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="__CSS__/main.css" />
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+.container{
+	max-width: 50%;
+}
+</style>	
+</head>
+<body class="is-preload">
+	<section id="main">
+		<div class="container">
+			<h3>辩论列表：</h3>
+			<table>
+				<thead>
+				  <tr>
+					<th>辩论主题</th>
+					<th>时间</th>
+					<th>操作</th>
+				  </tr>
+				</thead>
+				<tbody>
+					<volist name="arguelist" id="list">
+						<tr>
+							<td>{$list.sTitle}</td>
+							<td>{$list.date}</td>
+							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->
+							<td><a style="text-decoration: underline;cursor:pointer;" onclick="confirmDelete('{$list.id}')">删除</a></td>
+						  </tr>
+					</volist>
+				</tbody>
+			  </table>
+		</div>
+	</section>
+</body>
+<script>
+	function confirmDelete(id) {
+        if(confirm("确认删除?")) {
+          //执行删除操作
+		  $.ajax({
+			url: '/Home/Index/deleteArgue', // 后端处理数据的URL
+			type: 'POST',
+			data:{'id':id},
+			success: function(response) {
+				if(response.status == 1){
+					window.location.reload();
+				}
+			},
+			error: function(response) {
+				// 处理错误响应
+			}
+		});
+        }
+    }
+
+</script>
+</html>

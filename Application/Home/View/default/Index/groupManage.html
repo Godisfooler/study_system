@@ -172,7 +172,7 @@ th {
 							<td>{$group.sName}</td>
 							<td>{$group.member_count}</td>
 							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->
-							<td style="text-decoration: underline;cursor:pointer;" onclick="showPopup('{$group.id}','{$group.sName}')">编辑</td>
+							<td><a style="text-decoration: underline;cursor:pointer;" onclick="showPopup('{$group.id}','{$group.sName}')">编辑</a> &nbsp;<if condition="$userInfo.iType EQ 2 || $userInfo.iIsAdmin EQ 1"><a style="text-decoration: underline;cursor:pointer;" onclick="confirmDelete('{$group.id}')">删除</a></if></td>
 						</tr>
 					</volist>
 				</tbody>
@@ -189,6 +189,24 @@ th {
 	</section>
 </body>
 <script>
+	function confirmDelete(id) {
+        if(confirm("确认删除?")) {
+          //执行删除操作
+		  $.ajax({
+			url: '/Home/Index/deleteGroup', // 后端处理数据的URL
+			type: 'POST',
+			data:{'id':id},
+			success: function(response) {
+				if(response.status == 1){
+					window.location.reload();
+				}
+			},
+			error: function(response) {
+				// 处理错误响应
+			}
+		});
+        }
+    }
 	function closePopup() {
 		document.getElementById("popup").style.display = "none";
 	}

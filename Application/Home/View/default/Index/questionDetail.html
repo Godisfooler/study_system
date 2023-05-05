@@ -205,7 +205,7 @@ header p{
 																	<label for="suggestions">指导建议：</label><br>
 																	<input type="text" id="suggestions" name="suggestions" value=""><br>
 																	<label for="score">评分：</label><br>
-																	<input type="number" id="score" max="10" min="1" name="score" value=""><br>
+																	<input type="number" id="score" max="10" min="1" name="score" value="" oninput="checkValue()"><br>
 																	<button onclick="submitForm(this)" answerId="{$answer.id}">提交</button>
 																</div>
 																<div id="dianping_msg"></div>
@@ -235,6 +235,17 @@ header p{
 		</div>
 
 		<script>
+			const hasApprised = "{$hasApprised}";
+			//自动校验输入框数字
+			function checkValue() {
+				let input = document.getElementById("score");
+				let value = parseInt(input.value);
+				if (value > 10) {
+					input.value = 10;
+				} else if (value < 1) {
+					input.value = 1;
+				}
+			}
 			function showList(obj){
 				$(obj).parent().parent().find("#dianping_list").show();
 				$(obj).attr('onclick','hideList(this)');
@@ -245,6 +256,10 @@ header p{
 			}
 
 			function showForm(obj) {
+				if(hasApprised){
+					$(obj).removeAttr('onclick');
+					alert('您已经点评过了！');return;
+				}
 			  	$(obj).parent().parent().find("#dianping_form").show();
 				$(obj).attr('onclick','hideForm(this)');
 			}
