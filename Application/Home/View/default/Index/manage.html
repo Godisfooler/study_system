@@ -76,6 +76,7 @@ th {
 				<thead>
 				  <tr>
 					<th>用户名</th>
+					<th>姓名</th>
 					<th>用户类型</th>
 					<th>注册时间</th>
 					<th>操作</th>
@@ -85,6 +86,7 @@ th {
 					<volist name="userList" id="user">
 						<tr>
 							<td>{$user.username}</td>
+							<td>{$user.realname}</td>
 							<td>{$user.userType}</td>
 							<td>{$user.regist_date}</td>
 							<td style="text-decoration: underline;cursor:pointer;"><a href="{:U('Home/Index/editUser')}?uid={$user.id}">编辑</a></td>

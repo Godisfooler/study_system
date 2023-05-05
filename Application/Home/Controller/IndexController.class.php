@@ -365,6 +365,8 @@ class IndexController extends Controller
         if($this->userInfo['iIsAdmin'] != 1){
             $this->error('无权限！');
         }
+        $list = M('group_list')->select();
+        $this->assign('grouplist',$list);
         $userInfo = M('ucenter_member')->find($uid);
         $this->assign('userDetail',$userInfo);
         $this->assign('pageType','manage');
@@ -376,6 +378,7 @@ class IndexController extends Controller
         $post = I('');
         $uid = $post['uid'];
         $data = [];
+        $data['realname'] = $post['realname'];
         $data['iType'] = $post['user_type'];
         $data['iGroupId'] = $post['group_select'];
         $data['iIsHeadman'] = $post['position_select'];
