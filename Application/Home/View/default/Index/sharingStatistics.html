@@ -34,7 +34,7 @@ th {
 				<thead>
 				  <tr>
 					<th>学生姓名</th>
-					<th>组号</th>
+					<th>组名</th>
 					<th>是否为组长</th>
 					<th>分享次数</th>
 				  </tr>
@@ -43,7 +43,7 @@ th {
 					<volist name="studentList" id="student">
 						<tr>
 							<td>{$student.realname}</td>
-							<td>{$student.iGroupId}</td>
+							<td>{$student.sName}</td>
 							<td>{$student.iIsHeadman}</td>
 							<td>{$student.count}</td>
 							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->

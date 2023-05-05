@@ -11,7 +11,7 @@
 				}
 				.reply_container {
 					max-width: 1200px;
-					margin: 0 auto;
+					margin: 25px auto;
 					padding: 20px;
 					background-color: #fff;
 					border: 1px solid #ddd;
@@ -38,6 +38,33 @@
 					line-height: 1;
 					margin-bottom: 10px;
 				}
+				.button {
+					width: 150px;
+					float: right;
+					height: 40px;
+					background-color: #64cc56;
+					border: none;
+					color: white;
+					font-size: 16px;
+					cursor: pointer;
+					border-radius: 6px;
+					margin-bottom: 15px;
+					outline: none;
+					box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
+					transition: all 0.2s ease-in-out;
+				}
+
+				.button:hover {
+					background-color: #2980b9;
+					box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.4);
+					transform: translateY(-2px);
+				}
+
+				.button:active {
+					background-color: #217dbb;
+					box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+					transform: translateY(1px);
+				}
 		</style>
 	</head>
 	<body class="is-preload">
@@ -55,7 +82,7 @@
 
 						<header>
                           <section>
-							<h3>共享资源列表：</h3>
+							<h3>共享资源列表：<a href="{:U('Home/Index/sharePublish')}"><button class="button">分享资源</button></a></h3>
 							
 							<div class="reply_container">
 								<volist name="share_list" id="list">

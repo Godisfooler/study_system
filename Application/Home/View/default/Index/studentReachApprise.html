@@ -32,7 +32,7 @@
   }
   .btndiv{
 	text-align: center;
-	margin-top: 100px;
+	margin-top: 65px;
   }
   .btndiv a{
 	color: #fff;
@@ -60,10 +60,12 @@
  </style>
 </head>
 <body>
- <div class="btndiv">
-	<a href="{:U('Home/Index/publish')}"><button class="button">问题回答情况</button></a>
-	<a href="{:U('Home/Argue/argueStatistics')}"><button class="button">辩论讨论情况</button></a>
-	<a href="{:U('Home/Index/sharingStatistics')}"><button class="button">信息资源发布统计</button></a>
- </div>
+  <section id="main">
+      <div class="btndiv">
+        <a href="{:U('Home/Index/questionStatistics')}"><button class="button">问题回答情况</button></a>
+        <a href="{:U('Home/Argue/argueStatistics')}"><button class="button">辩论讨论情况</button></a>
+        <a href="{:U('Home/Index/sharingStatistics')}"><button class="button">信息资源发布统计</button></a>
+      </div>
+  </section>
 </body>
 </html>

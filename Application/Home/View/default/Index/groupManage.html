@@ -1,0 +1,227 @@
+<html>
+	<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+		<title>分组管理</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="__CSS__/main.css" />
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+.container{
+	width: 40%;
+}
+.popup {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
+.popup-content {
+	background-color: white;
+	padding: 40px;
+	border-radius: 5px;
+	width: 80%;
+	max-width: 600px;
+	height: 70%;
+	max-height: 500px;
+}
+
+.popup p{
+	display: block;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	padding-left: 10px;
+	width: 100%;
+	border: 1px solid #ddd;
+}
+.close-button {
+	float:right;
+	position: relative;
+	top: -30px;
+	right: -20px;
+	font-size: 2.2em;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	color: #333;
+}
+.comment_div{
+	max-width: 600px;
+	height: 100%;
+	max-height: 500px;
+	overflow: auto;
+	margin-bottom: 10px;
+}
+.back_href{
+	text-decoration: underline;
+}
+.back_href:hover{
+	text-decoration: underline;
+}
+.button {
+   width: 100px;
+   float: right;
+   height: 40px;
+   background-color: #64cc56;
+   border: none;
+   color: white;
+   font-size: 16px;
+   cursor: pointer;
+   border-radius: 6px;
+   margin-bottom: 10px;
+   outline: none;
+   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
+   transition: all 0.2s ease-in-out;
+  }
+
+  .button:hover {
+   background-color: #2980b9;
+   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.4);
+   transform: translateY(-2px);
+  }
+
+  .button:active {
+   background-color: #217dbb;
+   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+   transform: translateY(1px);
+  }
+  .popup {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
+.popup-content {
+	background-color: white;
+	padding: 40px;
+	border-radius: 5px;
+	width: 80%;
+	max-width: 400px;
+	height: 60%;
+	max-height: 240px;
+	overflow: auto;
+}
+
+.popup input {
+	display: block;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	width: 100%;
+}
+.saveBtn{
+	width: 30%;
+	height: 40px;
+	padding: 10px;
+}
+.close-button {
+	float:right;
+	position: relative;
+	top: -30px;
+	right: -20px;
+	font-size: 2.2em;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	color: #333;
+}
+</style>	
+</head>
+<body class="is-preload">
+	<section id="main">
+		<div class="container">
+			<h3>分组列表： <button class="button" onclick="showPopup()">添加</button></h3>
+			<table>
+				<thead>
+				  <tr>
+					<th>组号</th>
+					<th>组名</th>
+					<th>人数</th>
+					<th>操作</th>
+				  </tr>
+				</thead>
+				<tbody>
+					<volist name="groups" id="group" key="k">
+						<tr>
+							<td>{$k}</td>
+							<td>{$group.sName}</td>
+							<td>{$group.member_count}</td>
+							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->
+							<td style="text-decoration: underline;cursor:pointer;" onclick="showPopup('{$group.id}','{$group.sName}')">编辑</td>
+						</tr>
+					</volist>
+				</tbody>
+			  </table>
+		</div>
+		<div id="popup" class="popup" style="display:none">
+			<div class="popup-content">
+				<span class="close-button" onclick="closePopup()">×</span>
+				<label for="group_name">组名:</label>
+				<input type="text" id="group_name">
+				<button onclick="" class="saveBtn">保存</button>
+			</div>
+		</div>
+	</section>
+</body>
+<script>
+	function closePopup() {
+		document.getElementById("popup").style.display = "none";
+	}
+
+	function showPopup(id,name) {
+		name = name==undefined?'':name;
+		$("#group_name").val(name);
+		id = id==undefined?'':id;
+		$(".saveBtn").attr('onclick',"saveGroup("+id+")");
+		document.getElementById("popup").style.display = "flex";
+	}
+
+	function saveGroup(id) {
+		var name = document.getElementById("group_name").value;
+		var data = {};
+		if(id != undefined){
+			data = {'id':id,'name':name};
+		}else{
+			data = {'name':name}
+		}
+		$.ajax({
+			url: '/Home/Index/saveGroup', // 后端处理数据的URL
+			type: 'POST',
+			data:data,
+			success: function(response) {
+				if(response.status == 1){
+					window.location.reload();
+				}
+			},
+			error: function(response) {
+				// 处理错误响应
+			}
+		});
+	}
+</script>
+</html>

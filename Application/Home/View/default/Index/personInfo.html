@@ -33,8 +33,8 @@
           </div>
           <if condition="$userInfo.iType EQ 0">
             <div class="form-group">
-              <label for="inputGroup">组号</label>
-              <input type="text" class="form-control" id="inputGroup" value="{$userInfo.iGroupId}" placeholder="" readonly="readonly">
+              <label for="inputGroup">组名</label>
+              <input type="text" class="form-control" id="inputGroup" value="{$userInfo.sName}" placeholder="" readonly="readonly">
             </div>
             <div class="form-group">
               <label for="inputPosition">是否为组长</label>
@@ -64,7 +64,7 @@
     var param = '';
     param += 'username='+($("#inputName").val()==undefined?'':$("#inputName").val());
     param += '&likes='+($("#inputLikes").val()==undefined?'':$("#inputLikes").val());
-    param += '&skill='+($("#inputSkill").val()==undefined?'':$("#inputLikes").val());
+    param += '&skill='+($("#inputSkill").val()==undefined?'':$("#inputSkill").val());
     param += '&password='+$("#password").val();
     return param;
   }

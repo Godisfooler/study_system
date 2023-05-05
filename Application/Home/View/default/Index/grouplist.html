@@ -1,0 +1,86 @@
+<html>
+	<head>
+    <include file="./Application/Home/View/default/Public/nav.html" />
+		<title>问答情况</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="__CSS__/main.css" />
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+.container{
+	max-width: 50%;
+}
+.button {
+   width: 150px;
+   float: right;
+   height: 40px;
+   background-color: #64cc56;
+   border: none;
+   color: white;
+   font-size: 16px;
+   cursor: pointer;
+   border-radius: 6px;
+   margin-bottom: 15px;
+   outline: none;
+   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
+   transition: all 0.2s ease-in-out;
+  }
+
+  .button:hover {
+   background-color: #2980b9;
+   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.4);
+   transform: translateY(-2px);
+  }
+
+  .button:active {
+   background-color: #217dbb;
+   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+   transform: translateY(1px);
+  }
+</style>	
+</head>
+<body class="is-preload">
+	<section id="main">
+		<div class="container">
+			<h3>问答情况统计 > 小组排行：			<a href="{:U('Home/Index/questionStatistics')}"><button class="button">个人排行</button></a></h3>
+			<table>
+				<thead>
+				  <tr>
+					<th>名次</th>
+					<th>组名</th>
+					<th>人数</th>
+					<th>平均分</th>
+					<th>操作</th>
+				  </tr>
+				</thead>
+				<tbody>
+					<volist name="groups" id="list" key="k">
+						<tr>
+							<td>{$k}</td>
+							<td>{$list.sName}</td>
+							<td>{$list.member_count}</td>
+							<td>{$list.average}</td>
+							<!-- <td id="id_{$student.id}">{$student.sApprise}</td> -->
+							<td style="text-decoration: underline;cursor:pointer;"><a href="{:U('Home/Index/questionStatistics')}?gid={$list.id}">查看组员排行</a></td>
+						  </tr>
+					</volist>
+				</tbody>
+			  </table>
+		</div>
+	</section>
+</body>
+</html>

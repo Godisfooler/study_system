@@ -18,6 +18,8 @@ class MemberController extends Controller
 
     //注册页面显示
     public function regist(){
+        $list = M('group_list')->select();
+        $this->assign('grouplist',$list);
         $this->Display();
     }
 

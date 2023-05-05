@@ -93,8 +93,9 @@ section {
                               <label for="username">分组：</label>
                               <div class="selection-box">
                                 <select id="group_select" name="group_select">
-                                  <option value="1">1组</option>
-                                  <option value="2">2组</option>
+                                  <volist name="grouplist" id="group">
+                                    <option value="{$group.id}">{$group.sName}</option>
+                                  </volist>
                                 </select>
                                 <span class="arrow"></span>
                               </div>
@@ -133,24 +134,28 @@ section {
       $(function(){
         $('#username').blur(function(){
           var uname = $(this).val();
-          $.ajax({
-          url: '/Home/Member/checkUsername',
-          type: 'POST',
-          data: {username:uname},
-          dataType: 'json',
-          success:function(res){
-            if(res.status == 0){
-                $('#tip').text('用户名已存在！');
-                $('#tip').css('color','red');
-            }else{
-                $('#tip').text('用户名可用');
-                $('#tip').css('color','#00FF00');
-            }
-          },
-          error:function(){
-            alert('请求出错！');
+          if(uname != ''){
+            $.ajax({
+              url: '/Home/Member/checkUsername',
+              type: 'POST',
+              data: {username:uname},
+              dataType: 'json',
+              success:function(res){
+                if(res.status == 0){
+                    $('#tip').text('用户名已存在！');
+                    $('#tip').css('color','red');
+                    $('.btn').attr('disabled',true);
+                }else{
+                    $('#tip').text('用户名可用');
+                    $('#tip').css('color','#00FF00');
+                    $('.btn').attr('disabled',false);
+                }
+              },
+              error:function(){
+                alert('请求出错！');
+              }
+              });
           }
-          });
         });
         });
 

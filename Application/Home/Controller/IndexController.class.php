@@ -44,7 +44,10 @@ class IndexController extends Controller
     //个人信息页面
     public function personInfo(){
         //数据库查询用户信息
-        $userInfo = M('ucenter_member')->find($this->uid);
+        $userInfo = M('ucenter_member um')
+        ->join('group_list as g ON um.iGroupId=g.id','LEFT')
+        ->where(['um.id'=>$this->uid])
+        ->find();
         $userInfo['iIsHeadman'] = $userInfo['iIsHeadman']>0?'是':'否';
         $userInfo['userType'] = $userInfo['iType'] == 2?'管理员':($userInfo['iType'] == 1?'老师':'学生');
         $userInfo['type_info'] = $userInfo['iType'] == 1 ? '老师':($userInfo['iType'] == 2?'':'学生');
@@ -396,6 +399,7 @@ class IndexController extends Controller
         $this->Display();
     }
 
+    //联系老师
     public function contactTeacher(){
         $list = M('ucenter_member')->where(['iType'=>1])->select();
         $this->assign('teacher_list',$list);
@@ -403,6 +407,8 @@ class IndexController extends Controller
         $this->Display();
     }
 
+
+    //留言保存
     public function saveMessage(){
         $data = [];
         $data['iTeacherId'] = I('teacher');
@@ -416,6 +422,7 @@ class IndexController extends Controller
         }
     }
 
+    //资源分享列表
     public function sharinglist(){
         $list = M('share_list a')
         ->field('a.*,um.username,f.sPath,f.sOriName')
@@ -431,10 +438,12 @@ class IndexController extends Controller
         $this->Display();
     }
 
+    //资源分享发布
     public function sharePublish(){
         $this->Display();
     }
 
+    //资源分享详情
     public function shareDetail($id){
         $list = M('share_list s')
         ->join('file f ON s.iFileId = f.id','LEFT')
@@ -442,7 +451,7 @@ class IndexController extends Controller
         ->where(['s.id'=>$id])
         ->find();
         $list['date'] = date("Y-m-d H:i",$list['iAddTime']);
-        //加载该问题所有回复
+        //加载所有回复
         $answerList = M('share_answer a')
         ->field('a.*,um.username')
         ->join('ucenter_member um ON a.uid = um.id','LEFT')
@@ -458,6 +467,7 @@ class IndexController extends Controller
         $this->Display();
     }
 
+    //资源分享保存
     public function shareSave(){
         $data = [];
         $config = C('DOWNLOAD_UPLOAD');
@@ -488,6 +498,7 @@ class IndexController extends Controller
         }
     }
 
+    //资源分享回复
     public function saveShareReply(){
         $data['sReply'] = I('reply_text');
         $data['uid'] = $this->uid;
@@ -501,22 +512,134 @@ class IndexController extends Controller
         }
     }
 
+    //资源分享情况统计
     public function sharingStatistics(){
         $userInfo = session('user_auth');
         if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
             $this->error("无权限！");
         }
         $studentList = M('ucenter_member um')
-        ->field('um.*,COUNT(a.id) AS count')
+        ->field('um.*,COUNT(a.id) AS count,g.sName')
         ->join('share_list as a ON um.id=a.uid','LEFT')
+        ->join('group_list as g ON um.iGroupId=g.id','LEFT')
         ->where(['um.iType'=>0])
         ->group('um.id')
         ->select();
         foreach($studentList as &$student){
             $student['iIsHeadman'] = $student['iIsHeadman']>0?'是':'否';
         }
+        array_multisort(array_column($studentList,'count'), SORT_DESC, $studentList);
         $this->assign('studentList',$studentList);
         $this->assign('pageType','studentList');
         $this->Display();
     }
+
+    //问答情况统计
+    public function questionStatistics($gid = ''){
+        $map = [];
+        $map['um.iType'] = 0;
+        if(!empty($gid)){
+            $map['um.iGroupId'] = $gid;
+        }
+        $userInfo = session('user_auth');
+        if($userInfo['iType'] != 1 && $userInfo['iIsAdmin'] != 1){
+            $this->error("无权限！");
+        }
+        $studentList = M('ucenter_member um')
+        ->field('um.*,COUNT(a.id) AS count')
+        ->join('answer_list as a ON um.id=a.uid','LEFT')
+        ->where($map)
+        ->group('um.id')
+        ->select();
+
+        $scores = $this->getAnswerAppraise();
+        foreach($studentList as &$student){   
+            $student['teacher_average'] = is_null($scores[$student['id']][1])?0:$scores[$student['id']][1];
+            $student['group_average'] = is_null($scores[$student['id']][2])?0:$scores[$student['id']][2];
+            $student['all_average'] = is_null($scores[$student['id']]['all'])?0:$scores[$student['id']]['all'];
+        }
+        $this->assign('studentList',$studentList);
+        $this->assign('pageType','studentList');
+        $this->Display();
+    }
+
+    //获取平均分
+    public function getAnswerAppraise($gid = ''){
+       $map = [];
+       $map['um.iType'] = ['GT',0];
+       if(!empty($gid)){
+           $map['um.iGroupId'] = $gid;
+       }
+       $list = M('appraise_list a')
+       ->field('a.*,um.realname,um.iType,w.uid as puid')
+       ->join('answer_list as w ON w.id=a.iAnswerId','LEFT')
+       ->join('ucenter_member as um ON um.id=a.uid','LEFT')
+       ->where($map)
+       ->select();
+
+       $scoreArr = [];
+       foreach($list as $l){
+           $scoreArr[$l['puid']][$l['iType']][] = $l['iScore'];
+       }
+       $averageArr = [];
+       foreach($scoreArr as $uid=>$arr){
+            foreach($arr as $type=>$val){
+                $average = array_sum($val)/count($val);
+                $average = is_int($average)?$average:number_format($average,2);
+                $averageArr[$uid][$type] = $average;
+            }
+            $allAverage = $averageArr[$uid][1]*0.7 + $averageArr[$uid][2]*0.3;
+            $averageArr[$uid]['all'] = $allAverage>0?number_format($allAverage,2):$allAverage;
+       }
+
+       return $averageArr;
+    }
+
+    //小组评分排行
+    public function grouplist(){
+       $groups = M('group_list')->select();
+       foreach($groups as &$group){
+          $memberCount = M('ucenter_member')->where(['iGroupId'=>$group['id']])->count();
+          $group['member_count'] = $memberCount;
+          $scores = $this->getAnswerAppraise($group['id']);
+          $allScore = 0;
+          foreach($scores as $score){
+            $allScore += $score['all'];
+          }
+          $group['average'] = number_format($allScore/$memberCount,2);
+       }
+       array_multisort(array_column($groups,'average'), SORT_DESC, $groups);
+
+       $this->assign('groups',$groups);
+       $this->assign('pageType','studentList');
+       $this->Display();
+
+    }
+
+    //分组管理
+    public function groupManage(){
+        $groups = M('group_list')->select();
+        foreach($groups as &$group){
+          $memberCount = M('ucenter_member')->where(['iGroupId'=>$group['id']])->count();
+          $group['member_count'] = $memberCount;
+        }
+        $this->assign('groups',$groups);
+        $this->Display();
+    }
+
+    //分组保存
+    public function saveGroup(){
+        $id = I('id');
+        $name = I('name');
+        $data['sName'] = $name;
+        if(!empty($id)){
+           $res = M('group_list')->where(['id'=>$id])->save($data);
+        }else{
+           $res = M('group_list')->add($data);
+        }
+        if($res){
+            $this->ajaxReturn(['status'=>1,'msg'=>'保存成功']);
+        }
+    }
+
 }
