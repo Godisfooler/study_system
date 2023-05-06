@@ -166,13 +166,15 @@ class IndexController extends Controller
         $result = M('appraise_list a')
         ->join('answer_list w ON w.id = a.iAnswerId','LEFT')
         ->where(['w.pid'=>$questionId,'a.uid'=>$this->uid])
-        ->find();
-        $hasApprised = false;
+        ->select();
+        $hasApprised = [];
         if($result){
-            $hasApprised = true;
+            foreach($result as $r){
+                $hasApprised[$r['iAnswerId']] = true;
+            }
         }
         $this->assign('questionDetail',$list);
-        $this->assign('hasApprised',$hasApprised);
+        $this->assign('hasApprised',json_encode($hasApprised));
         $this->assign('answerList',$answerList);
         $this->assign('pageType','questionList');
         $this->Display();
@@ -203,6 +205,7 @@ class IndexController extends Controller
         $data['iAddTime'] = time();
         $res = M('appraise_list')->add($data);
         if($res){
+            $data['id'] = $res;
             $data['date'] = date("Y-m-d H:i",$data['iAddTime']);
             $data['username'] = $this->userInfo['username'];
             $this->ajaxReturn(['status'=>1,'msg'=>'点评成功！','data'=>$data]);

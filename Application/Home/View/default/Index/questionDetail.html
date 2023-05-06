@@ -177,7 +177,7 @@ header p{
 																<span class="downSpan" style="float:left;position: relative;top: -30px;text-decoration: underline;">附件：<a href="{:U('Home/Index/downloadById')}?fileId={$answer.iFileId}">{$answer.sOriName}</a></span>
 															</if>	
 															<if condition="$userInfo.iType GT 0 || $userInfo.iIsHeadman EQ 1">
-																<div class="dianping"><button onclick="showList(this)">查看点评</button> <button class="dianping_btn" onclick="showForm(this)">点评</button></div>
+																<div class="dianping"><button onclick="showList(this)">查看点评</button> <button class="dianping_btn" onclick="showForm(this,'{$answer.id}')">点评</button></div>
 																<div class="clear"></div>
 																<div id="dianping_list" style="display:none;">
 																	<volist name="answer.appriseList" id="appriselist">
@@ -191,7 +191,7 @@ header p{
 																			<p>{$appriselist.sShortComing}</p>
 																			<label for="suggestions">指导建议：</label>
 																			<p>{$appriselist.sSuggestions}</p>
-																			<label for="suggestions">评分：</label>
+																			<label for="score">评分：</label>
 																			<p>{$appriselist.iScore}</p>
 																		</div>
 																	</volist>
@@ -235,7 +235,7 @@ header p{
 		</div>
 
 		<script>
-			const hasApprised = "{$hasApprised}";
+			window.apprised = {$hasApprised};
 			//自动校验输入框数字
 			function checkValue() {
 				let input = document.getElementById("score");
@@ -255,18 +255,18 @@ header p{
 				$(obj).attr('onclick','showList(this)');
 			}
 
-			function showForm(obj) {
-				if(hasApprised){
+			function showForm(obj,id) {
+				if(window.apprised[id]){
 					$(obj).removeAttr('onclick');
 					alert('您已经点评过了！');return;
 				}
 			  	$(obj).parent().parent().find("#dianping_form").show();
-				$(obj).attr('onclick','hideForm(this)');
+				$(obj).attr('onclick','hideForm(this,'+id+')');
 			}
 
-			function hideForm(obj) {
+			function hideForm(obj,id) {
 			  	$(obj).parent().parent().find("#dianping_form").hide();
-				$(obj).attr('onclick','showForm(this)');
+				$(obj).attr('onclick','showForm(this,'+id+')');
 			}
 
 	  
@@ -285,6 +285,7 @@ header p{
 					success: function(response) {
 						// 处理成功响应
 						if(response.status == 1){
+							window.apprised[response.data.id] = true;
 							var tempHtml = '<div id="list_detail">'+
 												'<div class="meta">'+
 													'<p>点评人：'+response.data.username+'  &nbsp;&nbsp;&nbsp;&nbsp;发表于：'+response.data.date+'</p>'+
@@ -302,7 +303,7 @@ header p{
 							$(obj).parent().find("#pros").val('');
 							$(obj).parent().find("#cons").val('');
 						    $(obj).parent().find("#suggestions").val('');
-							$(obj).parent().parent().find(".dianping .dianping_btn").attr('onclick','showForm(this)');
+							$(obj).parent().parent().find(".dianping .dianping_btn").attr('onclick','showForm(this,'+response.data.id+')');
 							$(obj).parent().parent().find("#dianping_form").hide();
 						}else{
 							$('#dianping_msg').html(response.msg);
