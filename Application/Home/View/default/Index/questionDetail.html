@@ -204,8 +204,8 @@ header p{
 																	<input type="text" id="cons" name="cons" value=""><br>
 																	<label for="suggestions">指导建议：</label><br>
 																	<input type="text" id="suggestions" name="suggestions" value=""><br>
-																	<label for="score">评分：</label><br>
-																	<input type="number" id="score" max="10" min="1" name="score" value="" oninput="checkValue()"><br>
+																	<label for="score{$answer.id}">评分：</label><br>
+																	<input type="number" id="score{$answer.id}" max="10" min="1" name="score" value="" oninput="checkValue('{$answer.id}')"><br>
 																	<button onclick="submitForm(this)" answerId="{$answer.id}">提交</button>
 																</div>
 																<div id="dianping_msg"></div>
@@ -237,8 +237,8 @@ header p{
 		<script>
 			window.apprised = {$hasApprised};
 			//自动校验输入框数字
-			function checkValue() {
-				let input = document.getElementById("score");
+			function checkValue(id) {
+				let input = document.getElementById("score"+id);
 				let value = parseInt(input.value);
 				if (value > 10) {
 					input.value = 10;
