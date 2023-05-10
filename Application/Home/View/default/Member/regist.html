@@ -77,7 +77,7 @@ section {
                           <input type="text" id="username" name="username" placeholder="请输入" required>
                           <span id="tip"></span>
                           <label for="username">密码：</label>
-                          <input type="password" class="password" name="password" placeholder="请输入" required>
+                          <input type="password" id="password" name="password" placeholder="请输入" required>
                             <label for="username">账户类型：</label>
                             <div class="selection-box">
                               <select id="user_type" name="user_type">
@@ -159,6 +159,26 @@ section {
         });
         });
 
+        //限制账号密码输入空格和特殊字符
+        var account = document.getElementById("username");
+        account.addEventListener("input", function() {
+          var regex = /^[a-zA-Z0-9_\-]+$/;
+          var value = this.value;
+          if (!regex.test(value)) {
+            // 如果输入包含特殊字符，清除输入框中的内容
+            this.value = value.replace(/[^\w\-]+/g, "");
+          }
+        });
+
+        var password = document.getElementById("password");
+        password.addEventListener("input", function() {
+          var regex = /^[a-zA-Z0-9_\-!@#$%^&*()+=\[\]{};':"\\|,.<>\/?]+$/;
+          var value = this.value;
+          if (!regex.test(value)) {
+            // 如果输入包含特殊字符，清除输入框中的内容
+            this.value = value.replace(/[^\w\-]+/g, "");
+          }
+        });
         const typeSelect = document.getElementById("user_type")
         typeSelect.addEventListener("change", event => {
             const selectedType = event.target.value

@@ -275,7 +275,7 @@ header p{
 			  var pros = $(obj).parent().find("#pros").val();
 			  var cons = $(obj).parent().find("#cons").val();
 			  var suggestions = $(obj).parent().find("#suggestions").val();
-			  var score = $(obj).parent().find("#score").val();
+			  var score = $(obj).parent().find("#score"+answerId).val();
 			  if(pros == '' && cons =='' && suggestions==''){
 			  }else{
 				$.ajax({
